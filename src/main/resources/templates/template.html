@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common::_header">
+  <title>alert</title>
+</head>
+<body id="page-top">
+<div id="wrapper">
+  <!-- Sidebar -->
+  <ul th:replace="common/sidebar::_sidebar"></ul>
+  <!-- Sidebar -->
+  <main th:replace="common/container::_main(~{::.main})">
+    <div class="main">
+    </div>
+  </main>
+
+</div>
+<div th:include="common/util::_toTop"></div>
+<div th:include="common/common::_footer"></div>
+</body>
+
+</html>
