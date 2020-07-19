@@ -1,7 +1,10 @@
-<ul xmlns:th="http://www.thymeleaf.org" th:fragment="_sidebar" class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
-  <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/dashboard/}">
+<ul xmlns:th="http://www.thymeleaf.org" th:fragment="_sidebar"
+    th:with="uri=${#httpServletRequest.getRequestURI()}"
+    class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
+  <a class="sidebar-brand d-flex align-items-center justify-content-center"
+     th:href="@{/dashboard/}">
     <div class="sidebar-brand-icon">
-      <img th:src="@{/static/img/logo/logo2.png}"  alt="logo" src=""/>
+      <img th:src="@{/static/img/logo/logo2.png}" alt="logo" src=""/>
     </div>
     <div class="sidebar-brand-text mx-3">RuangAdmin</div>
   </a>
@@ -25,12 +28,18 @@
          data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <h6 class="collapse-header">Bootstrap UI</h6>
-        <a class="collapse-item  active" th:href="@{/dashboard/alerts/}">Alerts</a>
-        <a class="collapse-item" th:href="@{/dashboard/buttons/}">Buttons</a>
-        <a class="collapse-item" th:href="@{/dashboard/dropdowns/}">Dropdowns</a>
-        <a class="collapse-item" th:href="@{/dashboard/modals/}">Modals</a>
-        <a class="collapse-item" th:href="@{/dashboard/popovers/}">Popovers</a>
-        <a class="collapse-item" th:href="@{/dashboard/progress-bar/}">Progress Bars</a>
+        <a th:class="'collapse-item ' + ${uri.contains('/dashboard/alerts') ? 'active' : ''}"
+           th:href="@{/dashboard/alerts/}">Alerts</a>
+        <a th:class="'collapse-item ' + ${uri.contains('/dashboard/buttons') ? 'active' : ''}"
+           th:href="@{/dashboard/buttons/}">Buttons</a>
+        <a th:class="'collapse-item ' + ${uri.contains('/dashboard/dropdowns') ? 'active' : ''}"
+           th:href="@{/dashboard/dropdowns/}">dropdowns</a>
+        <a th:class="'collapse-item ' + ${uri.contains('/dashboard/modals') ? 'active' : ''}"
+           th:href="@{/dashboard/modals/}">modals</a>
+        <a th:class="'collapse-item ' + ${uri.contains('/dashboard/popovers') ? 'active' : ''}"
+           th:href="@{/dashboard/popovers/}">popovers</a>
+        <a th:class="'collapse-item ' + ${uri.contains('/dashboard/alerts') ? 'active' : ''}"
+           th:href="@{/dashboard/progress-bar/}">progress-bar</a>
       </div>
     </div>
   </li>
@@ -100,6 +109,6 @@
       <span>Charts</span>
     </a>
   </li>
-  <hr class="sidebar-divider" />
+  <hr class="sidebar-divider"/>
   <div class="version" id="version-ruangadmin"></div>
 </ul>

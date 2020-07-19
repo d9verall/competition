@@ -1,4 +1,6 @@
-<main id="content-wrapper" class="d-flex flex-column" xmlns:th="http://www.thymeleaf.org"
+<main id="content-wrapper" class="d-flex flex-column"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
      th:fragment="_main(main)">
   <div id="content">
     <!--  Topbar  -->
@@ -40,7 +42,7 @@
           <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                aria-labelledby="alertsDropdown">
             <h6 class="dropdown-header">
-              Alerts Center
+              提醒
             </h6>
             <a class="dropdown-item d-flex align-items-center" href="#">
               <div class="mr-3">
@@ -88,7 +90,7 @@
           <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
                aria-labelledby="messagesDropdown">
             <h6 class="dropdown-header">
-              Message Center
+              消息中心
             </h6>
             <a class="dropdown-item d-flex align-items-center" href="#">
               <div class="dropdown-list-image mr-3">
@@ -180,7 +182,7 @@
              aria-haspopup="true" aria-expanded="false">
             <img class="img-profile rounded-circle" th:src="@{/static/img/boy.png}"
                  style="max-width: 60px" alt="profile" src="">
-            <span class="ml-2 d-none d-lg-inline text-white small">Maman Ketoprak</span>
+            <span class="ml-2 d-none d-lg-inline text-white small" sec:authentication="name">Maman Ketoprak</span>
           </a>
           <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                aria-labelledby="userDropdown">
@@ -200,7 +202,7 @@
             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                data-target="#logoutModal">
               <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-              Logout
+              退出登录
             </a>
           </div>
         </li>
@@ -222,4 +224,29 @@
     </div>
   </footer>
   <!-- Footer -->
+
+  <!-- Modal logout -->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
+       aria-labelledby="exampleModalLabelLogout"
+       aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabelLogout">哦不！</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>您确认退出当前系统吗？</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">取消</button>
+          <a class="btn btn-primary" th:href="@{/logout}">确认退出</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal logout -->
+
 </main>

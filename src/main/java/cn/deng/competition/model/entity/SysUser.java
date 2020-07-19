@@ -52,6 +52,11 @@ public class SysUser {
   private String email;
 
   /**
+   * 头像
+   */
+  private String avatar;
+
+  /**
    * 角色
    */
   @Enumerated(STRING)
