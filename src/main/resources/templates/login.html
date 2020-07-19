@@ -1,79 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
-  <link href="../static/img/logo/logo.png" rel="icon">
-  <title>RuangAdmin - Login</title>
-  <link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="../static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-  <link href="../static/css/ruang-admin.min.css" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <title>Welcome</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Raleway:300,600"
+        rel="stylesheet">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+        integrity="sha256-aAr2Zpq8MZ+YA/D6JtRD3xtrwpEz2IqOS+pWD/7XKIw=" crossorigin="anonymous">
+  <link th:href="@{/static/css/login.css}" rel="stylesheet">
 </head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="container">
+  <section id="formHolder">
+    <div class="row">
+      <!-- Brand Box -->
+      <div class="col-sm-6 brand">
+        <a href="#" class="logo">TF <span>.</span></a>
 
-<body class="bg-gradient-login">
-  <!-- Login Content -->
-  <div class="container-login">
-    <div class="row justify-content-center">
-      <div class="col-xl-10 col-lg-12 col-md-9">
-        <div class="card shadow-sm my-5">
-          <div class="card-body p-0">
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="login-form">
-                  <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Login</h1>
-                  </div>
-                  <form class="user">
-                    <div class="form-group">
-                      <input type="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp"
-                        placeholder="Enter Email Address">
-                    </div>
-                    <div class="form-group">
-                      <input type="password" class="form-control" id="exampleInputPassword" placeholder="Password">
-                    </div>
-                    <div class="form-group">
-                      <div class="custom-control custom-checkbox small" style="line-height: 1.5rem;">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">Remember
-                          Me</label>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <a href="index.html" class="btn btn-primary btn-block">Login</a>
-                    </div>
-                    <hr>
-                    <a href="index.html" class="btn btn-google btn-block">
-                      <i class="fab fa-google fa-fw"></i> Login with Google
-                    </a>
-                    <a href="index.html" class="btn btn-facebook btn-block">
-                      <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
-                    </a>
-                  </form>
-                  <hr>
-                  <div class="text-center">
-                    <a class="font-weight-bold small" href="register.html">Create an Account!</a>
-                  </div>
-                  <div class="text-center">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="heading">
+          <h2>Welcome</h2>
+          <p>天府学院——竞赛平台</p>
+        </div>
+
+        <div class="success-msg">
+          <p>注册成功！现在你可以正常登录了～</p>
+          <a href="#" class="profile">你的个人资料</a>
         </div>
       </div>
-    </div>
-  </div>
-  <!-- Login Content -->
-  <script src="../static/vendor/jquery/jquery.min.js"></script>
-  <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
-  <script src="../static/js/ruang-admin.min.js"></script>
-</body>
 
+      <!-- Form Box -->
+      <div class="col-sm-6 form">
+        <!-- Login Form -->
+        <div class="login form-peice">
+          <form class="login-form" action="#" th:action="@{/login}" method="post">
+            <div class="form-group">
+              <label for="login-email">邮箱/手机号</label>
+              <input type="text" name="username" id="login-email" required />
+              <span class="error"></span>
+            </div>
+            <div class="form-group">
+              <label for="login-password">密码</label>
+              <input type="password" name="password" id="login-password" required />
+              <span class="error"></span>
+            </div>
+            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+            <div class="CTA">
+              <input type="button" id="login" value="登录">
+              <a href="#" class="switch">注册帐号</a>
+            </div>
+          </form>
+        </div><!-- End Login Form -->
+
+
+        <!-- forget Form -->
+        <div class="forget form-peice switched">
+          <form class="forget-form" action="#" method="post">
+
+            <div class="form-group">
+              <label for="name">用户名称</label>
+              <input type="text" name="username" id="name" class="name">
+              <span class="error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="email">邮箱地址</label>
+              <input type="email" name="emailAddress" id="email" class="email">
+              <span class="error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">手机号</label>
+              <input type="text" name="phone" id="phone" class="phone">
+              <span class="error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="password">密码</label>
+              <input type="password" name="password" id="password" class="pass">
+              <span class="error"></span>
+            </div>
+
+            <div class="form-group">
+              <label for="passwordCon">确认密码</label>
+              <input type="password" name="passwordCon" id="passwordCon" class="passConfirm">
+              <span class="error"></span>
+            </div>
+
+            <div class="CTA">
+              <input type="button" value="现在注册" id="register">
+              <a href="#" class="switch">已拥有帐号</a>
+            </div>
+          </form>
+        </div><!-- End forget Form -->
+      </div>
+    </div>
+
+  </section>
+
+
+  <footer>
+    <p>
+      Form made by: <a href="http://mohmdhasan.tk" target="_blank">Mohmdhasan.tk</a>
+    </p>
+  </footer>
+
+</div>
+<!-- partial -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.min.js"
+        integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8="
+        crossorigin="anonymous"></script>
+<script th:src="@{/static/js/page/login.js}"></script>
+</body>
 </html>
