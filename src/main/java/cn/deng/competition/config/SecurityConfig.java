@@ -1,5 +1,7 @@
 package cn.deng.competition.config;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,26 +15,32 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 /**
  * 应用安全配置.
  *
- * @author <a href="https://echocow.cn">EchoCow</a>
- * @date 2020/7/18 上午2:09
+ * @author verall
  */
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+  private static final String LOGIN_URL = "/login";
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
         .authorizeRequests(authorize -> authorize
-            .antMatchers("/user/exist/**").permitAll()
+            .antMatchers("/").authenticated()
             .anyRequest().authenticated()
         )
         .formLogin(form ->
-            form.loginPage("/login")
-                .defaultSuccessUrl("/")
+            form.loginPage(LOGIN_URL)
+                .defaultSuccessUrl("/dashboard")
+                .failureHandler((request, response, exception) ->
+                    response
+                        .sendRedirect(buildErrorPath(request.getParameter("username"), exception)))
                 .permitAll()
-        ).logout(logout ->
-            logout.invalidateHttpSession(true)
+        )
+        .logout(logout ->
+            logout
+                .invalidateHttpSession(true)
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
         );
   }
@@ -46,6 +54,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Bean
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  private String buildErrorPath(String username, Exception exception) {
+    return LOGIN_URL +
+        "?error=" + URLEncoder.encode(exception.getLocalizedMessage(), StandardCharsets.UTF_8) +
+        "&username=" + username;
   }
 
 }

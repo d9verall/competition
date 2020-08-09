@@ -28,9 +28,11 @@ $(document).ready(function () {
     $.get(`user/exist/${$login.val()}`, function (res) {
       if (res) {
         tipHidden($login)
+        console.log('success')
         !success || success();
       } else {
         tipShow($login, `用户 ${$login.val()} 不存在`)
+        console.log('failed')
         !fail || fail();
       }
     })

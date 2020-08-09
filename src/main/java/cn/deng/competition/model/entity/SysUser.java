@@ -2,39 +2,33 @@ package cn.deng.competition.model.entity;
 
 import static javax.persistence.EnumType.STRING;
 
+import cn.deng.competition.base.BaseEntity;
 import cn.deng.competition.model.constant.SysRole;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Table;
+import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.Where;
 
 /**
  * 用户实体类.
  *
- * @author <a href="https://echocow.cn">EchoCow</a>
- * @date 2020/7/18 上午1:52
+ * @author verall
  */
 @Data
+@SuperBuilder
+@NoArgsConstructor
+@Accessors(chain = true)
 @Entity(name = "sys_user")
 @Table(name = "sys_user")
-@Accessors(chain = true)
-public class SysUser {
-
-  /**
-   * id
-   */
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-
-  /**
-   * 名字
-   */
-  private String name;
+@Where(clause = "enable = true")
+@EqualsAndHashCode(callSuper = true)
+public class SysUser extends BaseEntity {
 
   /**
    * 密码

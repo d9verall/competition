@@ -1,5 +1,6 @@
 package cn.deng.competition.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * .
  *
  * @author verall
- * @date 2020/7/14 下午11:41
  */
 @Controller
 @RequestMapping("/dashboard")
+@PreAuthorize("isAuthenticated()")
 public class DashboardController {
 
-  @GetMapping()
+  @GetMapping
   public String index() {
     return "index";
   }

@@ -3,8 +3,7 @@ package cn.deng.competition.model.constant;
 /**
  * .
  *
- * @author <a href="https://echocow.cn">EchoCow</a>
- * @date 2020/7/18 上午2:01
+ * @author verall
  */
 public enum SysRole {
   /**

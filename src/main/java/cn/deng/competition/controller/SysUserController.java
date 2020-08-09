@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * .
  *
- * @author <a href="https://echocow.cn">EchoCow</a>
- * @date 2020/7/19 下午4:10
+ * @author verall
  */
 @Controller
 @RequiredArgsConstructor
@@ -25,7 +24,13 @@ public class SysUserController {
   @ResponseBody
   @GetMapping("/exist/{user}")
   public Boolean exist(@PathVariable String user) {
-    return sysUserService.existByEmailOrPhone(new SysUser().setEmail(user).setPhone(user));
+    return sysUserService
+        .existByEmailOrPhone(
+            SysUser.builder()
+                .name(user)
+                .email(user)
+                .phone(user)
+                .build());
   }
 
 }

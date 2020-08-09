@@ -3,8 +3,7 @@ package cn.deng.competition.model.exception;
 /**
  * .
  *
- * @author <a href="https://echocow.cn">EchoCow</a>
- * @date 2020/7/18 下午10:47
+ * @author verall
  */
 public class ResourceNotFoundException extends RuntimeException {
 
