@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common::_header">
+  <title>alert</title>
+</head>
+<body id="page-top">
+<div id="wrapper">
+  <!-- Sidebar -->
+  <ul th:replace="common/sidebar::_sidebar"></ul>
+  <!-- Sidebar -->
+  <main th:replace="common/container::_main(~{::.main})">
+    <div class="main">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">个人信息</h1>
+      </div>
+
+      <div th:if="${profile}" class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        操作成功！
+      </div>
+
+      <div th:if="${error}" class="alert alert-danger alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p th:text="${error}"></p>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8">
+          <!-- 基本信息 -->
+          <div class="card mb-4">
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">基础信息</h6>
+            </div>
+            <div class="card-body">
+              <form id="base-form" th:action="@{/user/profile}" method="post">
+                <input type="hidden" name="_csrf" id="csrf1" th:value="${_csrf.token}"/>
+                <div class="form-group">
+                  <label for="inputName">姓名</label>
+                  <input type="text" class="form-control" id="inputName"
+                         aria-describedby="nameHelp" required
+                         th:value="${user.username}"
+                         name="name"
+                         placeholder="请输入姓名">
+                  <small id="nameHelp" class="form-text text-muted">请确保姓名真实有效.</small>
+                </div>
+                <div class="form-group">
+                  <label for="inputEmail">电子邮箱</label>
+                  <input type="email" class="form-control" id="inputEmail"
+                         aria-describedby="emailHelp" required
+                         th:value="${user.email}"
+                         name="email"
+                         placeholder="请输入电子邮箱">
+                  <small id="emailHelp" class="form-text text-muted">请确保电子邮箱真实有效.</small>
+                </div>
+                <div class="form-group">
+                  <label for="inputPhone">手机号</label>
+                  <input type="text" class="form-control" id="inputPhone"
+                         aria-describedby="phoneHelp" required
+                         th:value="${user.phone}"
+                         name="phone"
+                         placeholder="请输入手机号">
+                  <small id="phoneHelp" class="form-text text-muted">请确保手机号真实有效.</small>
+                </div>
+                <button type="submit" class="btn btn-primary">保存</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <!-- 密码修改 -->
+          <div class="card mb-4">
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">修改密码</h6>
+            </div>
+            <div class="card-body">
+              <form id="password-form" th:action="@{/user/password}" method="post">
+                <input type="hidden" name="_csrf" id="csrf2" th:value="${_csrf.token}"/>
+                <div class="form-group">
+                  <label for="inputPassword">密码</label>
+                  <input type="password" class="form-control" id="inputPassword"
+                         name="password" required placeholder="请输入密码">
+                </div>
+                <div class="form-group">
+                  <label for="inputRePassword">确认密码</label>
+                  <input type="password" class="form-control" id="inputRePassword"
+                         name="rePassword" required placeholder="请再次输入密码">
+                </div>
+                <button type="submit" class="btn btn-primary">修改密码</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+<div th:include="common/util::_toTop"></div>
+<div th:include="common/common::_footer"></div>
+</body>
+
+</html>

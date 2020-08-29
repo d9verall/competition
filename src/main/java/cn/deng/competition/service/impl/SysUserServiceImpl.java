@@ -22,4 +22,9 @@ public class SysUserServiceImpl implements SysUserService {
     return sysUserRepository.existsByEmailOrPhone(user.getEmail(), user.getPhone());
   }
 
+  @Override
+  public SysUser save(SysUser user) {
+    return sysUserRepository.save(user);
+  }
+
 }

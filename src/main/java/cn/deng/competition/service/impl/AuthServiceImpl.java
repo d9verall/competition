@@ -29,14 +29,10 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     // 通过邮箱/手机号查询用户信息，如果不存在，抛出用户不存在异常
-    SysUser user = sysUserRepository.findFirstByEmailOrPhone(username, username)
-        .orElseThrow(() -> new UsernameNotFoundException(String.format("用户 %s 不存在", username)));
     // 构建 UserDetails 接口实现类
-    return User.builder()
-        .username(username)
-        .password(user.getPassword())
-        .roles(user.getRole().name())
-        .build();
+    return sysUserRepository
+        .findFirstByEmailOrPhone(username, username)
+        .orElseThrow(() -> new UsernameNotFoundException(String.format("用户 %s 不存在", username)));
   }
 
   @Override

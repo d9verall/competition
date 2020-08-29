@@ -18,4 +18,11 @@ public interface SysUserService {
    */
   boolean existByEmailOrPhone(SysUser user);
 
+  /**
+   * 保存/更新用户信息
+   *
+   * @param user 用户
+   * @return 保存后的用户
+   */
+  SysUser save(SysUser user);
 }

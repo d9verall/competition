@@ -33,17 +33,21 @@
 
       <!-- Form Box -->
       <div class="col-sm-6 form">
-        <!-- Login Form -->
+        <!-- 登陆表单 -->
         <div class="login form-peice">
           <form class="login-form" action="#" th:action="@{/login}" method="post">
+            <span class="error" style="display: block"
+                  th:if="${(param.error != null) and (param.error[0] != null)}"
+                  th:text="${param.error[0]}">Wrong user or password</span>
             <div class="form-group">
               <label for="login-email">邮箱/手机号</label>
-              <input type="text" name="username" id="login-email" required />
+              <input type="text" name="username" id="login-email"
+                     th:value="${param.username == null? '1': param.username[0]}" required/>
               <span class="error"></span>
             </div>
             <div class="form-group">
               <label for="login-password">密码</label>
-              <input type="password" name="password" id="login-password" required />
+              <input type="password" name="password" id="login-password" required/>
               <span class="error"></span>
             </div>
             <input type="hidden" name="_csrf" id="csrf" th:value="${_csrf.token}"/>
@@ -52,13 +56,12 @@
               <a href="#" class="switch">注册帐号</a>
             </div>
           </form>
-        </div><!-- End Login Form -->
+        </div>
 
 
-        <!-- forget Form -->
+        <!-- 注册表单 -->
         <div class="forget form-peice switched">
           <form class="forget-form" action="#" method="post">
-
             <div class="form-group">
               <label for="name">姓名</label>
               <input type="text" name="username" id="name" class="name">
@@ -79,13 +82,13 @@
 
             <div class="form-group">
               <label for="password">密码</label>
-              <input type="password" name="password" id="password" class="pass">
+              <input type="password" required name="password" id="password" class="pass">
               <span class="error"></span>
             </div>
 
             <div class="form-group">
               <label for="rePassword">确认密码</label>
-              <input type="password" name="rePassword" id="rePassword" class="passConfirm">
+              <input type="password" required name="rePassword" id="rePassword" class="passConfirm">
               <span class="error"></span>
             </div>
 
@@ -94,7 +97,7 @@
               <a href="#" class="switch">已拥有帐号</a>
             </div>
           </form>
-        </div><!-- End forget Form -->
+        </div>
       </div>
     </div>
 

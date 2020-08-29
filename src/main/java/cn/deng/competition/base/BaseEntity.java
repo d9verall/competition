@@ -1,5 +1,6 @@
 package cn.deng.competition.base;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -24,7 +25,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class BaseEntity {
+public class BaseEntity implements Serializable {
 
   /**
    * id

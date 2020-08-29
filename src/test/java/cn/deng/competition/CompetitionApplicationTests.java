@@ -2,29 +2,11 @@ package cn.deng.competition;
 
 
 import cn.deng.competition.model.entity.SysUser;
-import cn.deng.competition.repostiory.SysUserRepository;
-import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@DataJpaTest
 class CompetitionApplicationTests {
-
-  @Autowired
-  private SysUserRepository sysUserRepository;
-
-  @BeforeEach
-  void setUp() {
-    SysUser sysUser = SysUser.builder()
-        .name("test")
-        .email("test")
-        .phone("test")
-        .build();
-    sysUserRepository.save(sysUser);
-  }
 
   @Test
   void contextLoads() {
@@ -35,7 +17,20 @@ class CompetitionApplicationTests {
 
   @Test
   void userTest () {
-    List<SysUser> users = sysUserRepository.findAll();
-    System.out.println(users);
+    SysUser test = SysUser.builder()
+        .name("test")
+        .password("test")
+        .phone("test")
+        .email("test")
+        .build();
+    SysUser user = SysUser.builder()
+        .name("user")
+        .password("user")
+        .build();
+
+    System.out.println(test);
+    System.out.println(user);
+    BeanUtils.copyProperties(user, test, "phone", "email");
+    System.out.println(user);
   }
 }
