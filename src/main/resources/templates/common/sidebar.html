@@ -1,5 +1,6 @@
 <ul xmlns:th="http://www.thymeleaf.org" th:fragment="_sidebar"
     th:with="uri=${#httpServletRequest.getRequestURI()}"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
     class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
   <a class="sidebar-brand d-flex align-items-center justify-content-center"
      th:href="@{/dashboard/}">
@@ -18,6 +19,22 @@
   <div class="sidebar-heading">
     Features
   </div>
+  <!--  管理员系统管理  -->
+  <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item  active">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSystem"
+       aria-expanded="true" aria-controls="systemCollapse">
+      <i class="far fa-fw fa-window-maximize"></i>
+      <span>系统管理</span>
+    </a>
+    <div id="collapseSystem" class="collapse show" aria-labelledby="headingSystem"
+         data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a th:class="'collapse-item ' + ${uri.contains('/system/user') ? 'active' : ''}"
+           th:href="@{/system/user/}">用户管理</a>
+      </div>
+    </div>
+  </li>
+
   <li class="nav-item  active">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
        aria-expanded="true" aria-controls="collapseBootstrap">

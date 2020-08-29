@@ -9,15 +9,15 @@ public enum SysRole {
   /**
    * 管理员
    */
-  ADMIN,
+  ROLE_ADMIN,
   /**
    * 评委
    */
-  JUDGE,
+  ROLE_JUDGE,
   /**
    * 学生
    */
-  STUDENT;
+  ROLE_STUDENT;
 
   @Override
   public String toString() {

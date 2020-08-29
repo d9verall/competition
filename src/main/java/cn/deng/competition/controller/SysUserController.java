@@ -5,7 +5,6 @@ import static cn.deng.competition.util.SecurityUtil.logout;
 import static cn.deng.competition.util.SecurityUtil.reloadCurrentUser;
 
 import cn.deng.competition.model.entity.SysUser;
-import cn.deng.competition.model.exception.BadRequestException;
 import cn.deng.competition.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;

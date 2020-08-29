@@ -4,6 +4,7 @@ import static javax.persistence.EnumType.STRING;
 
 import cn.deng.competition.base.BaseEntity;
 import cn.deng.competition.model.constant.SysRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -40,6 +41,7 @@ public class SysUser extends BaseEntity implements UserDetails, Serializable {
   /**
    * 密码
    */
+  @JsonIgnore
   private String password;
 
   /**
@@ -61,7 +63,7 @@ public class SysUser extends BaseEntity implements UserDetails, Serializable {
    * 角色
    */
   @Enumerated(STRING)
-  private SysRole role = SysRole.STUDENT;
+  private SysRole role = SysRole.ROLE_STUDENT;
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {

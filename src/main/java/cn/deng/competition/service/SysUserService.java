@@ -1,7 +1,7 @@
 package cn.deng.competition.service;
 
 import cn.deng.competition.model.entity.SysUser;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import java.util.List;
 
 /**
  * Sys User Service.
@@ -25,4 +25,18 @@ public interface SysUserService {
    * @return 保存后的用户
    */
   SysUser save(SysUser user);
+
+  /**
+   * 获取所有的用户
+   *
+   * @return 所有的用户
+   */
+  List<SysUser> getAll();
+
+  /**
+   * 锁定用户
+   *
+   * @param id 用户 id
+   */
+  void lock(Long id);
 }

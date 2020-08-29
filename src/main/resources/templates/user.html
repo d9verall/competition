@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/common::_header">
+  <title>alert</title>
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.10.21/css/dataTables.bootstrap4.min.css"
+        integrity="sha256-ugpqzk9NhK3S2sVpMgSrIin1AzsJMlqUIMOCXyzPaL8=" crossorigin="anonymous">
+</head>
+<body id="page-top">
+<div id="wrapper">
+  <!-- Sidebar -->
+  <ul th:replace="common/sidebar::_sidebar"></ul>
+  <!-- Sidebar -->
+  <main th:replace="common/container::_main(~{::.main})">
+    <div class="main">
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">用户管理</h1>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="./">Home</a></li>
+          <li class="breadcrumb-item">Tables</li>
+          <li class="breadcrumb-item active" aria-current="page">DataTables</li>
+        </ol>
+      </div>
+
+      <div th:if="${action}" class="alert alert-success alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        操作成功！
+      </div>
+
+      <!-- Row -->
+      <div class="row">
+        <!-- 用户列表 -->
+        <div class="col-lg-12">
+          <div class="card mb-4">
+            <div
+                class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 class="m-0 font-weight-bold text-primary">您可以自由管理当前系统下的所有用户</h6>
+            </div>
+            <div class="table-responsive p-3">
+              <table class="table align-items-center table-flush table-hover" id="userDataTable">
+                <thead class="thead-light">
+                <tr>
+                  <th>头像</th>
+                  <th>姓名</th>
+                  <th>邮箱</th>
+                  <th>电话</th>
+                  <th>角色</th>
+                  <th>创建时间</th>
+                  <th>修改时间</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                  <th colspan="7" style="text-align:right"
+                      th:text="'管理员:' + ${admin} + '个，评委：' + ${judge} + '个，学生：' + ${student} + '个'">
+                    Total:
+                  </th>
+                </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Row-->
+
+      <!-- Documentation Link -->
+      <div class="row">
+        <div class="col-lg-12">
+          <p>DataTables is a third party plugin that is used to generate the demo table below. For
+            more information
+            about DataTables, please visit the official <a href="https://datatables.net/"
+                                                           target="_blank">DataTables
+              documentation.</a></p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+<div th:include="common/util::_toTop"></div>
+<div th:include="common/common::_footer"></div>
+
+<!-- Page level plugins -->
+<script src="https://cdn.jsdelivr.net/npm/datatables.net@1.10.21/js/jquery.dataTables.min.js"
+        integrity="sha256-s+IGOQWIhMyylwPABPBE89mzWrAmYL7J+XDfd8OFGkw="
+        crossorigin="anonymous"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.10.21/js/dataTables.bootstrap4.min.js"
+    integrity="sha256-gd5e0qED7nmMn2QTN00QRJ3TspSFFxXpqS0nKogoR9U="
+    crossorigin="anonymous"></script>
+<!-- Page level custom scripts -->
+<script th:inline="javascript">
+  const data = [[${users}]];
+  $(document).ready(function () {
+    $('#userDataTable').DataTable({
+      searching: true,
+      serverSide: false,
+      paging: true,
+      data,
+      columns: [
+        {
+          data: "avatar",
+          render: (data) => `<img class="img-profile rounded-circle" src="${data}" alt="user" style="max-width: 45px" />`
+        },
+        {data: "name"},
+        {data: "email"},
+        {data: "phone"},
+        {
+          data: "role",
+          render: (data) => {
+            if (data === 'ROLE_ADMIN') {
+              return `<span class="text-underline-danger">管理员</span>`
+            } else if (data === 'ROLE_STUDENT') {
+              return `<span class="text-underline-primary">学生</span>`
+            } else {
+              return `<span class="text-underline-warning">评委</span>`
+            }
+          }
+        },
+        {data: "createTime"},
+        {data: "updateTime"},
+        {
+          data: "id",
+          render: data => {
+            return `
+              <a href="javascript:void(0);" class="btn btn-success btn-sm">
+                <i class="fas fa-pencil-alt"></i>
+              </a>
+              <a href="${data}" class="btn btn-danger btn-sm">
+                <i class="fas fa-trash"></i>
+              </a>`
+          }
+        }
+      ],
+      language: {
+        "processing": "处理中...",
+        "loadingRecords": "载入中...",
+        "lengthMenu": "显示 _MENU_ 项结果",
+        "zeroRecords": "沒有符合的结果",
+        "info": "展示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+        "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+        "infoFiltered": "(从 _MAX_ 项结果中过滤)",
+        "infoPostFix": "",
+        "search": "搜索结果:",
+        "paginate": {
+          "first": "第一页",
+          "previous": "上一页",
+          "next": "下一页",
+          "last": "最后一页"
+        },
+        "aria": {
+          "sortAscending": ": 升序排列",
+          "sortDescending": ": 降序排列"
+        }
+      }
+    });
+  });
+</script>
+</body>
+
+</html>

@@ -3,6 +3,7 @@ package cn.deng.competition.service.impl;
 import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.repostiory.SysUserRepository;
 import cn.deng.competition.service.SysUserService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,18 @@ public class SysUserServiceImpl implements SysUserService {
   @Override
   public SysUser save(SysUser user) {
     return sysUserRepository.save(user);
+  }
+
+  @Override
+  public List<SysUser> getAll() {
+    return sysUserRepository.findAll();
+  }
+
+  @Override
+  public void lock(Long id) {
+    SysUser user = sysUserRepository.getOne(id);
+    user.setEnable(false);
+    sysUserRepository.save(user);
   }
 
 }
