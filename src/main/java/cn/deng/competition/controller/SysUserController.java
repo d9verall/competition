@@ -2,11 +2,12 @@ package cn.deng.competition.controller;
 
 import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.service.SysUserService;
+import javax.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -21,16 +22,16 @@ public class SysUserController {
 
   private final SysUserService sysUserService;
 
+  @PermitAll
   @ResponseBody
-  @GetMapping("/exist/{user}")
-  public Boolean exist(@PathVariable String user) {
+  @GetMapping("/exist")
+  public Boolean exist(@RequestParam String email,
+      @RequestParam String phone) {
     return sysUserService
         .existByEmailOrPhone(
             SysUser.builder()
-                .name(user)
-                .email(user)
-                .phone(user)
+                .email(email)
+                .phone(phone)
                 .build());
   }
-
 }

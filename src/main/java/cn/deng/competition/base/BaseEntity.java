@@ -1,6 +1,7 @@
 package cn.deng.competition.base;
 
 import java.time.LocalDateTime;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -8,8 +9,11 @@ import javax.persistence.MappedSuperclass;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 /**
  *
@@ -19,6 +23,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @SuperBuilder
 @MappedSuperclass
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
 
   /**
@@ -46,8 +51,20 @@ public class BaseEntity {
   private LocalDateTime updateTime;
 
   /**
+   * 创建用户
+   */
+  @CreatedBy
+  private String createUser;
+
+  /**
+   * 修改用户
+   */
+  @LastModifiedBy
+  private String updateUser;
+
+  /**
    * 是否启用
    */
-  private Boolean enable;
+  private Boolean enable = true;
 
 }

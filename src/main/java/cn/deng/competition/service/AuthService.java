@@ -4,18 +4,14 @@ import cn.deng.competition.model.entity.SysUser;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
- * Sys User Service.
- *
  * @author verall
  */
-public interface SysUserService {
+public interface AuthService extends UserDetailsService {
 
   /**
-   * 根据邮箱/手机查询用户是否存在
+   * 注册用户
    *
    * @param user 用户
-   * @return 结果
    */
-  boolean existByEmailOrPhone(SysUser user);
-
+  void register(SysUser user);
 }

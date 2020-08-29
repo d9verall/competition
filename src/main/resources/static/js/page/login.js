@@ -2,6 +2,7 @@ $(document).ready(function () {
   'use strict';
   let usernameError = true,
       emailError = true,
+      phoneError = true,
       passwordError = true,
       passConfirm = true
   // Detect browser for css purpose
@@ -25,23 +26,37 @@ $(document).ready(function () {
     if ($login.val().trim().length === 0) {
       return
     }
-    $.get(`user/exist/${$login.val()}`, function (res) {
-      if (res) {
-        tipHidden($login)
-        console.log('success')
-        !success || success();
-      } else {
-        tipShow($login, `用户 ${$login.val()} 不存在`)
-        console.log('failed')
-        !fail || fail();
-      }
-    })
+    $.get(`user/exist?email=${$login.val()}&phone=${$login.val()}`,
+        function (res) {
+          if (!res) {
+            tipShow($login, `用户 ${$login.val()} 不存在`)
+            !fail || fail();
+          } else {
+            tipHidden($login)
+            !success || success();
+          }
+        })
+  }
+
+  function registerValidate(ele, success, fail) {
+    if (ele.val().trim().length === 0) {
+      return
+    }
+    $.get(`user/exist?email=${ele.val()}&phone=${ele.val()}`,
+        function (res) {
+          if (res) {
+            tipShow(ele, `用户 ${ele.val()} 已存在`)
+            !fail || fail();
+          } else {
+            tipHidden(ele)
+            !success || success();
+          }
+        })
   }
 
   $login.blur(function () {
     loginValidate()
   })
-
 
   // Label effect
   const $input = $('input')
@@ -69,18 +84,26 @@ $(document).ready(function () {
         tipShow($(this), '请输入你的邮箱地址')
         emailError = true;
       } else {
-        tipHidden($(this))
-        emailError = false;
+        registerValidate($(this), function () {
+          tipHidden($(this))
+          emailError = false;
+        }, function () {
+          emailError = true;
+        })
       }
     }
     // Phone
     if ($(this).hasClass('phone')) {
       if ($(this).val().length !== 11) {
         tipShow($(this), '请输入正确手机号')
-        emailError = true;
+        phoneError = true;
       } else {
-        tipHidden($(this))
-        emailError = false;
+        registerValidate($(this), function () {
+          tipHidden($(this))
+          phoneError = false;
+        }, function () {
+          phoneError = true;
+        })
       }
     }
     // PassWord
@@ -123,37 +146,55 @@ $(document).ready(function () {
   });
   // Form submit
   $('#register').on('click', function () {
-    if (usernameError === true || emailError === true || passwordError === true
+    if (usernameError === true || emailError === true || phoneError === true
+        || passwordError === true
         || passConfirm === true) {
       $('.name, .email, .pass, .passConfirm, .phone').blur();
     } else {
-      $('.forget, .login').addClass('switched');
-      setTimeout(function () {
-        $('.forget, .login').hide();
-      }, 700);
-      setTimeout(function () {
-        $('.brand').addClass('active');
-      }, 300);
-      setTimeout(function () {
-        $('.heading').addClass('active');
-      }, 600);
-      setTimeout(function () {
-        $('.success-msg p').addClass('active');
-      }, 900);
-      setTimeout(function () {
-        $('.success-msg a').addClass('active');
-      }, 1050);
-      setTimeout(function () {
-        $('.form').hide();
-      }, 700);
+      // $('.forget, .login').addClass('switched');
+      // setTimeout(function () {
+      //   $('.forget, .login').hide();
+      // }, 700);
+      // setTimeout(function () {
+      //   $('.brand').addClass('active');
+      // }, 300);
+      // setTimeout(function () {
+      //   $('.heading').addClass('active');
+      // }, 600);
+      // setTimeout(function () {
+      //   $('.success-msg p').addClass('active');
+      // }, 900);
+      // setTimeout(function () {
+      //   $('.success-msg a').addClass('active');
+      // }, 1050);
+      // setTimeout(function () {
+      //   $('.form').hide();
+      // }, 700);
+      $.ajax({
+        url: 'register',
+        method: 'post',
+        headers: {"X-CSRF-TOKEN": $('#csrf').val()},
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: $('#name').val(),
+          email: $('#email').val(),
+          phone: $('#phone').val(),
+          password: $('#password').val(),
+          rePassword: $('#rePassword').val()
+        }),
+        success: function (result) {
+          console.log(result)
+        },
+        error: function (error) {
+          console.log(error)
+        }
+      })
     }
   });
-
 
   $('#login').on('click', function () {
     loginValidate(function () {
       $('form.login-form').submit();
     })
   })
-
 });

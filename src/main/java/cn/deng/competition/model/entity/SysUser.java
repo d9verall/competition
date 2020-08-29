@@ -7,7 +7,6 @@ import cn.deng.competition.model.constant.SysRole;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -54,6 +53,6 @@ public class SysUser extends BaseEntity {
    * 角色
    */
   @Enumerated(STRING)
-  private SysRole role;
+  private SysRole role = SysRole.STUDENT;
 
 }

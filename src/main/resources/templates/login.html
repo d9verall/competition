@@ -46,7 +46,7 @@
               <input type="password" name="password" id="login-password" required />
               <span class="error"></span>
             </div>
-            <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+            <input type="hidden" name="_csrf" id="csrf" th:value="${_csrf.token}"/>
             <div class="CTA">
               <input type="button" id="login" value="登录">
               <a href="#" class="switch">注册帐号</a>
@@ -60,7 +60,7 @@
           <form class="forget-form" action="#" method="post">
 
             <div class="form-group">
-              <label for="name">用户名称</label>
+              <label for="name">姓名</label>
               <input type="text" name="username" id="name" class="name">
               <span class="error"></span>
             </div>
@@ -84,8 +84,8 @@
             </div>
 
             <div class="form-group">
-              <label for="passwordCon">确认密码</label>
-              <input type="password" name="passwordCon" id="passwordCon" class="passConfirm">
+              <label for="rePassword">确认密码</label>
+              <input type="password" name="rePassword" id="rePassword" class="passConfirm">
               <span class="error"></span>
             </div>
 
