@@ -1,11 +1,11 @@
 package cn.deng.competition.service.impl;
 
+import cn.deng.competition.model.constant.SysRole;
 import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.model.exception.ResourceExistException;
 import cn.deng.competition.repostiory.SysUserRepository;
 import cn.deng.competition.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,6 +44,7 @@ public class AuthServiceImpl implements AuthService {
       throw new ResourceExistException("用户已经存在");
     }
     user.setPassword(passwordEncoder.encode(user.getPassword()));
+    user.setRole(SysRole.ROLE_STUDENT);
     sysUserRepository.save(user);
   }
 }

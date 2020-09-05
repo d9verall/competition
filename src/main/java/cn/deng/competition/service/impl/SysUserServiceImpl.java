@@ -5,7 +5,6 @@ import cn.deng.competition.repostiory.SysUserRepository;
 import cn.deng.competition.service.SysUserService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 public class SysUserServiceImpl implements SysUserService {
 
   private final SysUserRepository sysUserRepository;
-  private final PasswordEncoder passwordEncoder;
 
   @Override
   public boolean existByEmailOrPhone(SysUser user) {

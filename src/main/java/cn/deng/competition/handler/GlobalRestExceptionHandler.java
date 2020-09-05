@@ -39,7 +39,8 @@ public class GlobalRestExceptionHandler {
   @ExceptionHandler({Exception.class})
   public HttpEntity<?> exceptionHandler(Exception e) {
     Map<String, String> result = new HashMap<>(1);
-    result.put("message", e.getLocalizedMessage());
+    result.put("message", e.getMessage());
+    e.printStackTrace();
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
   }
 }
