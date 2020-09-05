@@ -28,6 +28,12 @@
         </button>
         操作成功！
       </div>
+      <div class="alert alert-danger alert-dismissible hide" id="action-error" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <p id="error-message">操作失败</p>
+      </div>
 
       <!-- Row -->
       <div class="row">
@@ -37,6 +43,14 @@
             <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
               <h6 class="m-0 font-weight-bold text-primary">您可以自由管理当前系统下的所有用户</h6>
+              <div>
+                <button type="button" class="btn btn-primary mb-1" id="user-add">添加</button>
+                <button type="button" class="btn btn-secondary mb-1" id="user-import">导入</button>
+                <a href="http://downloads.echocow.cn/file/%E7%94%A8%E6%88%B7%E5%AF%BC%E5%85%A5%E6%A8%A1%E6%9D%BF.xlsx"
+                   target="_blank" class="btn btn-info">
+                  <span class="text">下载模板</span>
+                </a>
+              </div>
             </div>
             <div class="table-responsive p-3">
               <table class="table align-items-center table-flush table-hover" id="userDataTable">
@@ -136,7 +150,8 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-outline-primary" data-dismiss="modal">取消</button>
-          <button type="button" id="update-user" data-id="" class="btn btn-outline-primary">确认</button>
+          <button type="button" id="update-user" data-id="" class="btn btn-outline-primary">确认
+          </button>
         </div>
       </div>
     </div>
@@ -153,6 +168,9 @@
     src="https://cdn.jsdelivr.net/npm/datatables.net-bs4@1.10.21/js/dataTables.bootstrap4.min.js"
     integrity="sha256-gd5e0qED7nmMn2QTN00QRJ3TspSFFxXpqS0nKogoR9U="
     crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-xlsx@0.8.22/dist/xlsx.core.min.js"
+        integrity="sha256-u/GgtPEIcTOPtPBWOkvMsZZLqECiTTcnkbYAIShgTh8="
+        crossorigin="anonymous"></script>
 <!-- Page level custom scripts -->
 <script th:inline="javascript">
   const data = [[${users}]];
@@ -255,6 +273,9 @@
       } else if (empty(user.role)) {
         $('#update-error-message').html('角色不能为空')
         error = true
+      } else if (id === -1 && empty(user.password)) {
+        $('#update-error-message').html('密码不能为空')
+        error = true
       }
       if (error) {
         $('#update-error').show()
@@ -270,11 +291,65 @@
           $('#update-modal').modal('hide')
           window.location.reload();
         },
-        error: function () {
+        error: function (error) {
           $('#update-error').show()
-          $('#update-error-message').html('操作失败')
+          $('#update-error-message').html(`操作失败:${error.responseJSON.message}`)
         }
       })
+    })
+    $('#user-add').click(function () {
+      const id = -1
+      $('#update-user').prop('data-id', id)
+      $('#name').val('')
+      $('#phone').val('')
+      $('#email').val('')
+      $('#password').val('')
+      $('#role').val('')
+      $('#update-modal').modal('show')
+    })
+    $('#user-import').click(function () {
+      if (!document.getElementById('readLocalFile')) {
+        let inputFile = document.createElement("input")
+        inputFile.setAttribute("id", "readLocalFile")
+        inputFile.setAttribute("type", "file")
+        inputFile.setAttribute("accept", ".xlsx, .xls");
+        inputFile.setAttribute("multiple", false)
+        inputFile.click();
+        document.body.appendChild(inputFile);
+        document.getElementById('readLocalFile').addEventListener('change', function (e) {
+          let files = e.target.files
+          if (files.length === 0) {
+            return
+          }
+          let file = files[0]
+          let reader = new FileReader()
+          reader.readAsBinaryString(file)
+          reader.onload = function (e) {
+            let data = e.target.result
+            let workbook = XLSX.read(data, {type: 'binary'})
+            let sheetNames = workbook.SheetNames
+            let worksheet = workbook.Sheets[sheetNames[0]]
+            let json = XLSX.utils.sheet_to_json(worksheet)
+            $.ajax({
+              url: `/user/import`,
+              method: 'post',
+              headers: {"X-CSRF-TOKEN": $('#csrf').val()},
+              contentType: 'application/json',
+              data: JSON.stringify(json),
+              success: function () {
+                window.location.reload();
+              },
+              error: function (error) {
+                $('#error-message').html(`操作失败:${error.responseJSON.message}`)
+                $('#action-error').fadeIn()
+              }
+            })
+            document.getElementById('readLocalFile').value = null
+          }
+        })
+      } else {
+        document.getElementById('readLocalFile').click()
+      }
     })
   });
 </script>

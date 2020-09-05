@@ -8,6 +8,7 @@ import static org.springframework.http.ResponseEntity.ok;
 import cn.deng.competition.model.annotation.HasAdmin;
 import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.service.SysUserService;
+import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -110,6 +111,14 @@ public class SysUserController {
     }
     sysUserService.updateUser(user);
     return ok().build();
+  }
+
+  @HasAdmin
+  @ResponseBody
+  @PostMapping("/import")
+  public HttpEntity<?> importUser(@RequestBody List<SysUser> users) {
+    int count = sysUserService.importUser(users);
+    return ok(count);
   }
 
 }

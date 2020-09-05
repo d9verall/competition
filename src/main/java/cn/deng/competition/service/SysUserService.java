@@ -46,4 +46,12 @@ public interface SysUserService {
    * @param user 用户
    */
   void updateUser(SysUser user);
+
+  /**
+   * 导入用户
+   *
+   * @param users 用户列表
+   * @return 数量
+   */
+  int importUser(List<SysUser> users);
 }

@@ -5,6 +5,7 @@ import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.model.exception.ResourceExistException;
 import cn.deng.competition.repostiory.SysUserRepository;
 import cn.deng.competition.service.AuthService;
+import cn.deng.competition.util.AvatarUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -45,6 +46,7 @@ public class AuthServiceImpl implements AuthService {
     }
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     user.setRole(SysRole.ROLE_STUDENT);
+    user.setAvatar(AvatarUtil.generate());
     sysUserRepository.save(user);
   }
 }

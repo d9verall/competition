@@ -7,3 +7,6 @@
 .text-underline-primary {
   border-bottom: 2px solid #007bff;
 }
+.hide {
+  display: none;
+}
