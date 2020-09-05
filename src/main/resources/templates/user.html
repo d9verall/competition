@@ -174,83 +174,23 @@
 <!-- Page level custom scripts -->
 <script th:inline="javascript">
   const data = [[${users}]];
+
+  function userUpdate(e) {
+    const id = $(e).attr('data-id')
+    const index = data.findIndex(d => `${d.id}` === `${id}`)
+    const user = data[index]
+    $('#update-user').prop('data-id', id)
+    $('#name').val(user.name)
+    $('#phone').val(user.phone)
+    $('#email').val(user.email)
+    $('#password').val('')
+    $('#role').val(user.role)
+    $('#update-modal').modal('show')
+  }
+
   $(document).ready(function () {
     let $update = $('#update-error');
     $update.hide()
-    $('#userDataTable').DataTable({
-      searching: true,
-      serverSide: false,
-      paging: true,
-      data,
-      columns: [
-        {
-          data: "avatar",
-          render: (data) => `<img class="img-profile rounded-circle" src="${data}" alt="user" style="max-width: 45px" />`
-        },
-        {data: "name"},
-        {data: "email"},
-        {data: "phone"},
-        {
-          data: "role",
-          render: (data) => {
-            if (data === 'ROLE_ADMIN') {
-              return `<span class="text-underline-danger">管理员</span>`
-            } else if (data === 'ROLE_STUDENT') {
-              return `<span class="text-underline-primary">学生</span>`
-            } else {
-              return `<span class="text-underline-warning">评委</span>`
-            }
-          }
-        },
-        {data: "createTime"},
-        {data: "updateTime"},
-        {
-          data: "id",
-          render: data => {
-            return `
-              <a href="javascript:void(0);" class="btn btn-success btn-sm user-update" data-id="${data}">
-                <i class="fas fa-pencil-alt"></i>
-              </a>
-              <a href="${data}" class="btn btn-danger btn-sm user-delete" data-id="${data}">
-                <i class="fas fa-trash"></i>
-              </a>`
-          }
-        }
-      ],
-      language: {
-        "processing": "处理中...",
-        "loadingRecords": "载入中...",
-        "lengthMenu": "显示 _MENU_ 项结果",
-        "zeroRecords": "沒有符合的结果",
-        "info": "展示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
-        "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
-        "infoFiltered": "(从 _MAX_ 项结果中过滤)",
-        "infoPostFix": "",
-        "search": "搜索结果:",
-        "paginate": {
-          "first": "第一页",
-          "previous": "上一页",
-          "next": "下一页",
-          "last": "最后一页"
-        },
-        "aria": {
-          "sortAscending": ": 升序排列",
-          "sortDescending": ": 降序排列"
-        }
-      }
-    });
-    $('.user-update').on('click', function () {
-      const id = $(this).attr('data-id')
-      const index = data.findIndex(d => `${d.id}` === `${id}`)
-      const user = data[index]
-      $('#update-user').prop('data-id', id)
-      $('#name').val(user.name)
-      $('#phone').val(user.phone)
-      $('#email').val(user.email)
-      $('#password').val('')
-      $('#role').val(user.role)
-      $('#update-modal').modal('show')
-    })
     $('#update-user').click(function () {
       $update.hide()
       const id = $(this).prop('data-id')
@@ -354,6 +294,68 @@
         document.getElementById('readLocalFile').click()
       }
     })
+    $('#userDataTable').DataTable({
+      searching: true,
+      serverSide: false,
+      paging: true,
+      data,
+      columns: [
+        {
+          data: "avatar",
+          render: (data) => `<img class="img-profile rounded-circle" src="${data}" alt="user" style="max-width: 45px" />`
+        },
+        {data: "name"},
+        {data: "email"},
+        {data: "phone"},
+        {
+          data: "role",
+          render: (data) => {
+            if (data === 'ROLE_ADMIN') {
+              return `<span class="text-underline-danger">管理员</span>`
+            } else if (data === 'ROLE_STUDENT') {
+              return `<span class="text-underline-primary">学生</span>`
+            } else {
+              return `<span class="text-underline-warning">评委</span>`
+            }
+          }
+        },
+        {data: "createTime"},
+        {data: "updateTime"},
+        {
+          data: "id",
+          render: data => {
+            return `
+              <a href="javascript:void(0);" class="btn btn-success btn-sm user-update" onclick="userUpdate(this)" data-id="${data}">
+                <i class="fas fa-pencil-alt"></i>
+              </a>
+              <a href="${data}" class="btn btn-danger btn-sm user-delete" data-id="${data}">
+                <i class="fas fa-trash"></i>
+              </a>`
+          }
+        }
+      ],
+      language: {
+        "processing": "处理中...",
+        "loadingRecords": "载入中...",
+        "lengthMenu": "显示 _MENU_ 项结果",
+        "zeroRecords": "沒有符合的结果",
+        "info": "展示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+        "infoEmpty": "显示第 0 至 0 项结果，共 0 项",
+        "infoFiltered": "(从 _MAX_ 项结果中过滤)",
+        "infoPostFix": "",
+        "search": "搜索结果:",
+        "paginate": {
+          "first": "第一页",
+          "previous": "上一页",
+          "next": "下一页",
+          "last": "最后一页"
+        },
+        "aria": {
+          "sortAscending": ": 升序排列",
+          "sortDescending": ": 降序排列"
+        }
+      }
+    });
   });
 </script>
 </body>
