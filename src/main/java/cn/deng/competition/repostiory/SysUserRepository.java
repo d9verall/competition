@@ -24,6 +24,22 @@ public interface SysUserRepository extends JpaRepository<SysUser, Long> {
   boolean existsByEmailOrPhone(String email, String phone);
 
   /**
+   * 通过邮箱查找用户是否存在
+   *
+   * @param email 邮箱
+   * @return 结果
+   */
+  boolean existsByEmail(String email);
+
+  /**
+   * 通过手机号查找用户是否存在
+   *
+   * @param phone 手机号
+   * @return 结果
+   */
+  boolean existsByPhone(String phone);
+
+  /**
    * 通过邮箱或者手机号查询用户
    *
    * @param email 邮箱

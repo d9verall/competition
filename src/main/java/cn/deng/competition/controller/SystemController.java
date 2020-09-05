@@ -42,7 +42,7 @@ public class SystemController {
   public String deleteUser(Model model, @PathVariable Long id) {
     sysUserService.lock(id);
     model.addAttribute("action", true);
-    return "forward:system/user";
+    return "forward:/system/user";
   }
 
   private Long countByRole(List<SysUser> users, SysRole role) {

@@ -1,5 +1,8 @@
 package cn.deng.competition.handler;
 
+import cn.deng.competition.model.exception.BadRequestException;
+import cn.deng.competition.model.exception.ResourceExistException;
+import cn.deng.competition.model.exception.ResourceNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +39,7 @@ public class GlobalRestExceptionHandler {
     return "请求参数错误";
   }
 
-  @ExceptionHandler({Exception.class})
+  @ExceptionHandler({BadRequestException.class, ResourceExistException.class, ResourceNotFoundException.class})
   public HttpEntity<?> exceptionHandler(Exception e) {
     Map<String, String> result = new HashMap<>(1);
     result.put("message", e.getMessage());

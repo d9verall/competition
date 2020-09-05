@@ -175,7 +175,8 @@
 <script th:inline="javascript">
   const data = [[${users}]];
   $(document).ready(function () {
-    $('#update-error').hide()
+    let $update = $('#update-error');
+    $update.hide()
     $('#userDataTable').DataTable({
       searching: true,
       serverSide: false,
@@ -251,6 +252,7 @@
       $('#update-modal').modal('show')
     })
     $('#update-user').click(function () {
+      $update.hide()
       const id = $(this).prop('data-id')
       const user = {
         id,
@@ -278,7 +280,7 @@
         error = true
       }
       if (error) {
-        $('#update-error').show()
+        $update.show()
         return
       }
       $.ajax({
@@ -292,12 +294,13 @@
           window.location.reload();
         },
         error: function (error) {
-          $('#update-error').show()
+          $update.show()
           $('#update-error-message').html(`操作失败:${error.responseJSON.message}`)
         }
       })
     })
     $('#user-add').click(function () {
+      $update.hide()
       const id = -1
       $('#update-user').prop('data-id', id)
       $('#name').val('')

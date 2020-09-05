@@ -6,8 +6,11 @@ import cn.deng.competition.repostiory.SysUserRepository;
 import cn.deng.competition.service.SysUserService;
 import cn.deng.competition.util.AvatarUtil;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +43,11 @@ public class SysUserServiceImpl implements SysUserService {
 
   @Override
   public void lock(Long id) {
-    SysUser user = sysUserRepository.getOne(id);
+    Optional<SysUser> byId = sysUserRepository.findById(id);
+    if (byId.isEmpty()) {
+      return;
+    }
+    SysUser user = byId.get();
     user.setEnable(false);
     sysUserRepository.save(user);
   }
@@ -48,16 +55,24 @@ public class SysUserServiceImpl implements SysUserService {
   @Override
   public void updateUser(SysUser user) {
     Long id = user.getId();
-    if (sysUserRepository.existsByEmailOrPhone(user.getEmail(), user.getPhone())) {
-      throw new ResourceExistException("用户已经存在");
-    }
     if (id == -1) {
+      if (sysUserRepository.existsByEmailOrPhone(user.getEmail(), user.getPhone())) {
+        throw new ResourceExistException("用户已经存在");
+      }
       user.setId(null);
       user.setAvatar(AvatarUtil.generate());
       sysUserRepository.save(user);
       return;
     }
     SysUser sysUser = sysUserRepository.getOne(id);
+    if (!StringUtils.equals(user.getPhone(), sysUser.getPhone())
+        && sysUserRepository.existsByPhone(user.getPhone())) {
+      throw new ResourceExistException("手机号已经被使用");
+    }
+    if (!StringUtils.equals(user.getEmail(), sysUser.getEmail())
+        && sysUserRepository.existsByEmail(user.getEmail())) {
+      throw new ResourceExistException("邮箱已经被使用");
+    }
     sysUser.setName(user.getName());
     sysUser.setPassword(user.getPassword());
     sysUser.setPhone(user.getPhone());
