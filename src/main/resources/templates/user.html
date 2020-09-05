@@ -79,8 +79,68 @@
       </div>
 
     </div>
-  </main>
 
+  </main>
+  <div class="modal fade" id="update-modal" tabindex="-1" role="dialog"
+       aria-labelledby="update-modal-labelled" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="update-modal-labelled">更新用户</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div id="update-error" class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <p id="update-error-message">操作失败</p>
+          </div>
+          <input type="hidden" name="_csrf" id="csrf" th:value="${_csrf.token}"/>
+          <div class="form-group">
+            <label for="name">姓名</label>
+            <input type="text" class="form-control" id="name"
+                   aria-describedby="nameHelp" required
+                   name="name"
+                   placeholder="请输入姓名">
+          </div>
+          <div class="form-group">
+            <label for="email">电子邮箱</label>
+            <input type="email" class="form-control" id="email"
+                   aria-describedby="emailHelp" required
+                   name="email"
+                   placeholder="请输入电子邮箱">
+          </div>
+          <div class="form-group">
+            <label for="phone">手机号</label>
+            <input type="text" class="form-control" id="phone"
+                   aria-describedby="phoneHelp" required name="phone"
+                   placeholder="请输入手机号">
+          </div>
+          <div class="form-group">
+            <label for="password">密码</label>
+            <input type="text" class="form-control" id="password"
+                   aria-describedby="phoneHelp" required name="phone"
+                   placeholder="请输入用户密码">
+          </div>
+          <div class="form-group">
+            <label for="role">用户角色</label>
+            <select class="form-control" id="role" name="role">
+              <option value="ROLE_ADMIN">管理员</option>
+              <option value="ROLE_JUDGE">评委</option>
+              <option value="ROLE_STUDENT">学生</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-primary" data-dismiss="modal">取消</button>
+          <button type="button" id="update-user" data-id="" class="btn btn-outline-primary">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div th:include="common/util::_toTop"></div>
 <div th:include="common/common::_footer"></div>
@@ -97,6 +157,7 @@
 <script th:inline="javascript">
   const data = [[${users}]];
   $(document).ready(function () {
+    $('#update-error').hide()
     $('#userDataTable').DataTable({
       searching: true,
       serverSide: false,
@@ -128,10 +189,10 @@
           data: "id",
           render: data => {
             return `
-              <a href="javascript:void(0);" class="btn btn-success btn-sm">
+              <a href="javascript:void(0);" class="btn btn-success btn-sm user-update" data-id="${data}">
                 <i class="fas fa-pencil-alt"></i>
               </a>
-              <a href="${data}" class="btn btn-danger btn-sm">
+              <a href="${data}" class="btn btn-danger btn-sm user-delete" data-id="${data}">
                 <i class="fas fa-trash"></i>
               </a>`
           }
@@ -159,6 +220,61 @@
         }
       }
     });
+    $('.user-update').on('click', function () {
+      const id = $(this).attr('data-id')
+      const index = data.findIndex(d => `${d.id}` === `${id}`)
+      const user = data[index]
+      $('#update-user').prop('data-id', id)
+      $('#name').val(user.name)
+      $('#phone').val(user.phone)
+      $('#email').val(user.email)
+      $('#password').val('')
+      $('#role').val(user.role)
+      $('#update-modal').modal('show')
+    })
+    $('#update-user').click(function () {
+      const id = $(this).prop('data-id')
+      const user = {
+        id,
+        name: $('#name').val(),
+        phone: $('#phone').val(),
+        email: $('#email').val(),
+        password: $('#password').val(),
+        role: $('#role').val()
+      }
+      let error = false
+      if (empty(user.name)) {
+        $('#update-error-message').html('姓名不能为空')
+        error = true
+      } else if (empty(user.phone)) {
+        $('#update-error-message').html('手机号不能为空')
+        error = true
+      } else if (empty(user.email)) {
+        $('#update-error-message').html('邮箱不能为空')
+        error = true
+      } else if (empty(user.role)) {
+        $('#update-error-message').html('角色不能为空')
+        error = true
+      }
+      if (error) {
+        $('#update-error').show()
+        return
+      }
+      $.ajax({
+        url: `/user/update`,
+        method: 'post',
+        headers: {"X-CSRF-TOKEN": $('#csrf').val()},
+        contentType: 'application/json',
+        data: JSON.stringify(user),
+        success: function () {
+          $('#update-modal').modal('hide')
+        },
+        error: function () {
+          $('#update-error').show()
+          $('#update-error-message').html('操作失败')
+        }
+      })
+    })
   });
 </script>
 </body>

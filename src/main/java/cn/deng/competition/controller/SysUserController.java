@@ -3,18 +3,23 @@ package cn.deng.competition.controller;
 import static cn.deng.competition.util.SecurityUtil.currentUser;
 import static cn.deng.competition.util.SecurityUtil.logout;
 import static cn.deng.competition.util.SecurityUtil.reloadCurrentUser;
+import static org.springframework.http.ResponseEntity.ok;
 
+import cn.deng.competition.model.annotation.HasAdmin;
 import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.service.SysUserService;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -88,6 +93,23 @@ public class SysUserController {
     // 退出当前用户
     logout();
     return "redirect:/login";
+  }
+
+  /**
+   * 更新用户
+   *
+   * @param user 用户信息
+   * @return 结果
+   */
+  @HasAdmin
+  @ResponseBody
+  @PostMapping("/update")
+  public HttpEntity<?> updateUser(@RequestBody SysUser user) {
+    if (Objects.nonNull(user.getPassword())) {
+      user.setPassword(passwordEncoder.encode(user.getPassword()));
+    }
+    sysUserService.updateUser(user);
+    return ok().build();
   }
 
 }

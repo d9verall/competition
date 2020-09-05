@@ -39,4 +39,11 @@ public interface SysUserService {
    * @param id 用户 id
    */
   void lock(Long id);
+
+  /**
+   * 更新用户
+   *
+   * @param user 用户
+   */
+  void updateUser(SysUser user);
 }
