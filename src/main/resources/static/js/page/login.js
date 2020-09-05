@@ -70,9 +70,6 @@ $(document).ready(function () {
       if ($(this).val().length === 0) {
         tipShow($(this), '请输入您的用户名')
         usernameError = true;
-      } else if ($(this).val().length > 1 && $(this).val().length <= 6) {
-        tipShow($(this), '请输入至少六个字符')
-        usernameError = true;
       } else {
         tipHidden($(this))
         usernameError = false;
@@ -151,25 +148,6 @@ $(document).ready(function () {
         || passConfirm === true) {
       $('.name, .email, .pass, .passConfirm, .phone').blur();
     } else {
-      // $('.forget, .login').addClass('switched');
-      // setTimeout(function () {
-      //   $('.forget, .login').hide();
-      // }, 700);
-      // setTimeout(function () {
-      //   $('.brand').addClass('active');
-      // }, 300);
-      // setTimeout(function () {
-      //   $('.heading').addClass('active');
-      // }, 600);
-      // setTimeout(function () {
-      //   $('.success-msg p').addClass('active');
-      // }, 900);
-      // setTimeout(function () {
-      //   $('.success-msg a').addClass('active');
-      // }, 1050);
-      // setTimeout(function () {
-      //   $('.form').hide();
-      // }, 700);
       $.ajax({
         url: 'register',
         method: 'post',
@@ -182,11 +160,31 @@ $(document).ready(function () {
           password: $('#password').val(),
           rePassword: $('#rePassword').val()
         }),
-        success: function (result) {
-          console.log(result)
+        success: function () {
+          $('.forget, .login').addClass('switched');
+          setTimeout(function () {
+            $('.forget, .login').hide();
+          }, 1000);
+          let $brand = $('.brand');
+          setTimeout(function () {
+            $brand.addClass('active');
+            $brand.removeClass('col-sm-6');
+          }, 1000);
+          setTimeout(function () {
+            $('.heading').addClass('active');
+          }, 1300);
+          setTimeout(function () {
+            $('.success-msg p').addClass('active');
+          }, 1600);
+          setTimeout(function () {
+            $('.success-msg a').addClass('active');
+          }, 1750);
+          setTimeout(function () {
+            $('.form').fadeOut();
+          }, 1000);
         },
         error: function (error) {
-          console.log(error)
+          alert(error.responseJSON.message)
         }
       })
     }
@@ -196,5 +194,32 @@ $(document).ready(function () {
     loginValidate(function () {
       $('form.login-form').submit();
     })
+  })
+
+  $('#register-login').on('click', function () {
+    $('.login').removeClass('switched');
+    setTimeout(function () {
+      $('.forget, .login').show();
+    }, 2000);
+    setTimeout(function () {
+      $brand.addClass('col-sm-6');
+    }, 3000)
+    let $brand = $('.brand');
+    setTimeout(function () {
+      $brand.removeClass('active');
+      $brand.css('width', '50%');
+    }, 1700);
+    setTimeout(function () {
+      $('.heading').removeClass('active');
+    }, 1450);
+    setTimeout(function () {
+      $('.success-msg p').removeClass('active');
+    }, 1150);
+    setTimeout(function () {
+      $('.success-msg a').removeClass('active');
+    }, 1000);
+    setTimeout(function () {
+      $('.form').fadeIn();
+    }, 2000);
   })
 });

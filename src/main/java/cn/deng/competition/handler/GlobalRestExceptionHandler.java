@@ -1,7 +1,11 @@
 package cn.deng.competition.handler;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -30,5 +34,12 @@ public class GlobalRestExceptionHandler {
       }
     }
     return "请求参数错误";
+  }
+
+  @ExceptionHandler({Exception.class})
+  public HttpEntity<?> exceptionHandler(Exception e) {
+    Map<String, String> result = new HashMap<>(1);
+    result.put("message", e.getLocalizedMessage());
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
   }
 }

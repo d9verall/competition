@@ -4,7 +4,9 @@ import cn.deng.competition.model.annotation.HasAdmin;
 import cn.deng.competition.model.constant.SysRole;
 import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.service.SysUserService;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +46,8 @@ public class SystemController {
   }
 
   private Long countByRole(List<SysUser> users, SysRole role) {
-    return users.stream().filter(user -> user.getRole().equals(role)).count();
+    return Optional.ofNullable(users)
+        .orElseGet(Collections::emptyList)
+        .stream().filter(user -> user.getRole().equals(role)).count();
   }
 }

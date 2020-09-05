@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
   private final SysUserRepository sysUserRepository;
+  private final PasswordEncoder passwordEncoder;
 
   /**
    * 获取用户信息，交给 Spring security 进行检验以及构建用户登录对象
@@ -41,6 +43,7 @@ public class AuthServiceImpl implements AuthService {
     if (exist) {
       throw new ResourceExistException("用户已经存在");
     }
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
     sysUserRepository.save(user);
   }
 }
