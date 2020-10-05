@@ -35,6 +35,22 @@
     </div>
   </li>
 
+  <!--  项目管理  -->
+  <li sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_JUDGE')" class="nav-item  active">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProject"
+       aria-expanded="true" aria-controls="projectCollapse">
+      <i class="far fa-fw fa-window-maximize"></i>
+      <span>项目管理</span>
+    </a>
+    <div id="collapseProject" class="collapse show" aria-labelledby="headingSystem"
+         data-parent="#accordionSidebar">
+      <div class="bg-white py-2 collapse-inner rounded">
+        <a th:class="'collapse-item ' + ${uri.contains('/project/create') ? 'active' : ''}"
+           th:href="@{/project/create/}">创建项目</a>
+      </div>
+    </div>
+  </li>
+
   <li class="nav-item  active">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBootstrap"
        aria-expanded="true" aria-controls="collapseBootstrap">
