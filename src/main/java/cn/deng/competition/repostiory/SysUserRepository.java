@@ -1,7 +1,9 @@
 package cn.deng.competition.repostiory;
 
 import cn.deng.competition.base.BaseRepository;
+import cn.deng.competition.model.constant.SysRole;
 import cn.deng.competition.model.entity.SysUser;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
@@ -47,5 +49,13 @@ public interface SysUserRepository extends BaseRepository<SysUser> {
    * @return 用户
    */
   Optional<SysUser> findFirstByEmailOrPhone(String email, String phone);
+
+  /**
+   * 获取指定角色的用户信息
+   *
+   * @param role 角色
+   * @return 结果
+   */
+  List<SysUser> findAllByRole(SysRole role);
 
 }

@@ -54,4 +54,11 @@ public interface SysUserService {
    * @return 数量
    */
   int importUser(List<SysUser> users);
+
+  /**
+   * 获取所有评委
+   *
+   * @return 结果
+   */
+  List<SysUser> getJudge();
 }

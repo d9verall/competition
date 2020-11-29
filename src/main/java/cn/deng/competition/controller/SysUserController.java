@@ -74,13 +74,14 @@ public class SysUserController {
   /**
    * 修改用户密码,需要具有完整的权限
    *
-   * @param password 密码信息
+   * @param password   密码信息
    * @param rePassword 重复密码信息
    * @return 登陆页面
    */
   @PreAuthorize("isFullyAuthenticated()")
   @PostMapping("/password")
-  public String password(Model model, @RequestParam String password, @RequestParam String rePassword) {
+  public String password(Model model, @RequestParam String password,
+      @RequestParam String rePassword) {
     // 获取当前登陆用户信息
     SysUser user = currentUser();
     // 对比密码是否一致
@@ -113,12 +114,31 @@ public class SysUserController {
     return ok().build();
   }
 
+  /**
+   * 导入用户
+   *
+   * @param users 用户
+   * @return 结果
+   */
   @HasAdmin
   @ResponseBody
   @PostMapping("/import")
   public HttpEntity<?> importUser(@RequestBody List<SysUser> users) {
     int count = sysUserService.importUser(users);
     return ok(count);
+  }
+
+
+  /**
+   * 获取评委
+   *
+   * @return 评委
+   */
+  @ResponseBody
+  @GetMapping("/judge")
+  public HttpEntity<?> getJudge() {
+    return ok(sysUserService.getJudge().stream()
+        .map(user -> user.setPassword(null).setEmail(null).setPhone(null)));
   }
 
 }

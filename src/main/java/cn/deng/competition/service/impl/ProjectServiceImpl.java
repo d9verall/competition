@@ -38,8 +38,8 @@ public class ProjectServiceImpl implements ProjectService {
   @Override
   public void apply(List<Long> ids, Boolean result) {
     List<Project> projects = projectRepository.findAllById(ids).stream()
-        .map(project -> project.setApply(result)).collect(
-            Collectors.toList());
+        .map(project -> project.setApply(result))
+        .collect(Collectors.toList());
     projectRepository.saveAll(projects);
   }
 
@@ -59,14 +59,19 @@ public class ProjectServiceImpl implements ProjectService {
         .collect(Collectors.toList());
     projectRepository.saveAll(projects);
     if (result.isFail()) {
+      projectJudgeRepository.deleteByIds(
+          projectJudgeRepository.findAllByProjectIdIn(ids).stream()
+              .map(BaseEntity::getId)
+              .collect(Collectors.toList()));
       return;
     }
     // 构建多条 项目评委关联数据
-    List<ProjectJudge> projectJudge = projects.stream()
+    List<ProjectJudge> projectJudges = projects.stream()
         .map(project -> judgeIds.stream().map(id ->
                 ProjectJudge.builder()
                     .judgeId(id)
                     .projectId(project.getId())
+                    .enable(true)
                     .build()
             ).collect(Collectors.toList())
         )
@@ -75,7 +80,7 @@ public class ProjectServiceImpl implements ProjectService {
         // 收集结果
         .collect(Collectors.toList());
     // 保存
-    projectJudgeRepository.saveAll(projectJudge);
+    projectJudgeRepository.saveAll(projectJudges);
   }
 
   @Override

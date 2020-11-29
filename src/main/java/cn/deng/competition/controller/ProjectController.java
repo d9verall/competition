@@ -100,7 +100,7 @@ public class ProjectController {
   @GetMapping("/review")
   public String review(@RequestParam List<Long> ids,
       @RequestParam List<Long> judgeIds,
-      @RequestParam(defaultValue = "true") Review result,
+      @RequestParam(defaultValue = "SUCCESS") Review result,
       @RequestParam(required = false) String reason) {
     projectService.review(ids, judgeIds, result, reason);
     return "project-list";

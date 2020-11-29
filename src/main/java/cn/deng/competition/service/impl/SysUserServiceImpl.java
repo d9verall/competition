@@ -1,5 +1,6 @@
 package cn.deng.competition.service.impl;
 
+import cn.deng.competition.model.constant.SysRole;
 import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.model.exception.ResourceExistException;
 import cn.deng.competition.repostiory.SysUserRepository;
@@ -94,6 +95,11 @@ public class SysUserServiceImpl implements SysUserService {
     );
     List<SysUser> sysUsers = sysUserRepository.saveAll(users);
     return sysUsers.size();
+  }
+
+  @Override
+  public List<SysUser> getJudge() {
+    return sysUserRepository.findAllByRole(SysRole.ROLE_JUDGE);
   }
 
 }
