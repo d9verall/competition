@@ -1,5 +1,6 @@
 package cn.deng.competition.service;
 
+import cn.deng.competition.controller.ProjectController.ProjectDetail;
 import cn.deng.competition.model.constant.Review;
 import cn.deng.competition.model.entity.Project;
 import java.util.List;
@@ -47,4 +48,12 @@ public interface ProjectService {
    * @param ids ids
    */
   void delete(List<Long> ids);
+
+  /**
+   * 获取指定的项目信息
+   *
+   * @param id id
+   * @return 结果
+   */
+  ProjectDetail view(Long id);
 }

@@ -4,12 +4,19 @@ import cn.deng.competition.model.annotation.HasAdmin;
 import cn.deng.competition.model.annotation.HasAdminOrJudge;
 import cn.deng.competition.model.constant.Review;
 import cn.deng.competition.model.entity.Project;
+import cn.deng.competition.model.entity.ProjectJudge;
+import cn.deng.competition.model.entity.ProjectStudent;
+import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.service.ProjectService;
 import java.util.List;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,7 +49,6 @@ public class ProjectController {
    *
    * @return 页面
    */
-  @HasAdminOrJudge
   @GetMapping("/list")
   public String list() {
     return "project-list";
@@ -54,7 +60,6 @@ public class ProjectController {
    * @return 数据
    */
   @ResponseBody
-  @HasAdminOrJudge
   @GetMapping("/data")
   public List<Project> data() {
     return projectService.findAll();
@@ -117,6 +122,31 @@ public class ProjectController {
   public String delete(@RequestParam List<Long> ids) {
     projectService.delete(ids);
     return "project-list";
+  }
+
+  @GetMapping("/view/{id}")
+  public String project(@PathVariable Long id, Model model) {
+    ProjectDetail projectDetail = projectService.view(id);
+    model.addAttribute("detail", projectDetail);
+    return "project-view";
+  }
+
+  @Data
+  @NoArgsConstructor
+  public static class ProjectDetail {
+
+    /**
+     * 项目
+     */
+    private Project project;
+    /**
+     * 评委
+     */
+    private List<ProjectJudge> judges;
+    /**
+     * 学生
+     */
+    private List<ProjectStudent> students;
   }
 
 }

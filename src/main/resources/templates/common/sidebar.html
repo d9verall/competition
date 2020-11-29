@@ -36,7 +36,7 @@
   </li>
 
   <!--  项目管理  -->
-  <li class="nav-item  active" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_JUDGE')">
+  <li class="nav-item active">
     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProject"
        aria-expanded="true" aria-controls="projectCollapse">
       <i class="far fa-fw fa-window-maximize"></i>
@@ -46,7 +46,7 @@
          data-parent="#accordionSidebar">
       <div class="bg-white py-2 collapse-inner rounded">
         <a th:class="'collapse-item ' + ${uri.contains('/project/create') ? 'active' : ''}"
-           th:href="@{/project/create/}">创建项目</a>
+           th:href="@{/project/create/}" sec:authorize="hasAnyRole('ROLE_ADMIN','ROLE_JUDGE')">创建项目</a>
         <a th:class="'collapse-item ' + ${uri.contains('/project/list') ? 'active' : ''}"
            th:href="@{/project/list/}">项目列表</a>
       </div>

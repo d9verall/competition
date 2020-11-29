@@ -4,6 +4,7 @@ import cn.deng.competition.base.BaseEntity;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -45,5 +46,11 @@ public class ProjectJudge extends BaseEntity implements Serializable {
    * 评分信息
    */
   private String info;
+
+  /**
+   * 评委
+   */
+  @Transient
+  private SysUser judge;
 
 }

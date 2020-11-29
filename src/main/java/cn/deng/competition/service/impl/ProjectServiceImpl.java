@@ -1,11 +1,16 @@
 package cn.deng.competition.service.impl;
 
 import cn.deng.competition.base.BaseEntity;
+import cn.deng.competition.controller.ProjectController.ProjectDetail;
 import cn.deng.competition.model.constant.Review;
 import cn.deng.competition.model.entity.Project;
 import cn.deng.competition.model.entity.ProjectJudge;
+import cn.deng.competition.model.entity.ProjectStudent;
+import cn.deng.competition.model.exception.ResourceNotFoundException;
 import cn.deng.competition.repostiory.ProjectJudgeRepository;
 import cn.deng.competition.repostiory.ProjectRepository;
+import cn.deng.competition.repostiory.ProjectStudentRepository;
+import cn.deng.competition.repostiory.SysUserRepository;
 import cn.deng.competition.service.ProjectService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,6 +29,8 @@ public class ProjectServiceImpl implements ProjectService {
 
   private final ProjectRepository projectRepository;
   private final ProjectJudgeRepository projectJudgeRepository;
+  private final ProjectStudentRepository projectStudentRepository;
+  private final SysUserRepository sysUserRepository;
 
   @Override
   public List<Project> findAll() {
@@ -92,5 +99,28 @@ public class ProjectServiceImpl implements ProjectService {
         .map(BaseEntity::getId)
         .collect(Collectors.toList());
     projectJudgeRepository.deleteByIds(projectJudgesIds);
+  }
+
+  @Override
+  public ProjectDetail view(Long id) {
+    Project project = projectRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("未找到项目信息"));
+    List<ProjectJudge> projectJudges = projectJudgeRepository
+        .findAllByProjectId(project.getId())
+        .stream()
+        .peek(projectJudge ->
+            projectJudge.setJudge(sysUserRepository.getOne(projectJudge.getJudgeId())))
+        .collect(Collectors.toList());
+    List<ProjectStudent> projectStudents = projectStudentRepository
+        .findAllByProjectId(project.getId())
+        .stream()
+        .peek(projectStudent ->
+            projectStudent.setStudent(sysUserRepository.getOne(projectStudent.getStudentId())))
+        .collect(Collectors.toList());
+    ProjectDetail detail = new ProjectDetail();
+    detail.setProject(project);
+    detail.setJudges(projectJudges);
+    detail.setStudents(projectStudents);
+    return detail;
   }
 }

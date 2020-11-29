@@ -22,4 +22,11 @@ public interface ProjectJudgeRepository extends BaseRepository<ProjectJudge> {
    */
   List<ProjectJudge> findAllByProjectIdIn(List<Long> projectIds);
 
+  /**
+   * 根据项目 id 查询
+   *
+   * @param id 项目 id
+   * @return 结果
+   */
+  List<ProjectJudge> findAllByProjectId(Long id);
 }

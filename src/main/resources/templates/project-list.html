@@ -17,7 +17,7 @@
   <main th:replace="common/container::_main(~{::.main})">
     <div class="main">
       <div id="toolbar">
-        <button class="btn btn-danger" sec:authorize="hasAnyRole('ROLE_ADMIN')">删除所选</button>
+        <button class="btn btn-danger" id="delete" sec:authorize="hasAnyRole('ROLE_ADMIN')">删除所选</button>
       </div>
       <table id="table"
              data-toggle="table"
@@ -31,13 +31,13 @@
              data-search="true"
              data-detail-view="true"
              data-detail-formatter="detailFormatter"
-             data-buttons="actions"
+             th:data-buttons="${#authentication.getAuthorities().contains('ROLE_STUDENT')?'empty':'actions'}"
              data-click-to-select="true"
              data-pagination="true">
         <thead>
         <tr>
           <th data-field="state" data-checkbox="true"></th>
-          <th data-field="name" data-sortable="true">项目名称</th>
+          <th data-field="name" data-sortable="true" data-formatter="nameFormatter">项目名称</th>
           <th data-field="description" data-visible="false">项目描述</th>
           <th data-field="gradeRule" data-visible="false">评分规则</th>
           <th data-field="createTime" data-sortable="true">创建时间</th>
@@ -49,7 +49,7 @@
     </div>
   </main>
   <div class="modal fade" id="review-project" tabindex="-1" aria-labelledby="reviewProject"
-       aria-hidden="true">
+       aria-hidden="true" sec:authorize="hasAnyRole('ROLE_ADMIN')">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -102,6 +102,9 @@
         : '<span class="text-muted">尚未开启报名</span>'
   }
 
+  /**
+   * @return {Array}
+   **/
   function getSelectRowIds() {
     return $table.bootstrapTable('getSelections').map(row => row.id)
   }
@@ -109,12 +112,12 @@
   /**
    * 详细信息格式化
    * @param index
-   * @param {{review, name, description, apply, createTime, updateTime, remark, gradeRule}} row
+   * @param {{id, review, name, description, apply, createTime, updateTime, remark, gradeRule}} row
    * @returns {string}
    */
   function detailFormatter(index, row) {
     const html = []
-    html.push(`<p>项目名称：${row.name}</p>`)
+    html.push(`<p>项目名称：<a href="/project/view/${row.id}">${row.name}</a></p>`)
     html.push(`<p>项目描述：<pre>${row.description}</pre></p>`)
     html.push(`<p>评分规则：<pre>${row.gradeRule}</pre></p>`)
     html.push(`<p>是否审阅：${reviewFormatter(row.review)}</p>`)
@@ -123,6 +126,10 @@
     html.push(`<p>修改时间：${row.updateTime}</p>`)
     html.push(`<p>备注信息：${row.remark}</p>`)
     return html.join('')
+  }
+
+  function nameFormatter(value, row) {
+    return `<a href="/project/view/${row.id}">${row.name}</a>`
   }
 
   function actions() {
@@ -156,6 +163,10 @@
         alert(`获取评委信息失败:${error}`)
       }
     })
+  }
+
+  function empty() {
+    return {}
   }
 
   /**
@@ -234,6 +245,10 @@
       }
     }
   }
+
+  $('#delete').on('click', function () {
+    window.location.href = `/project/delete?ids=${getSelectRowIds().join()}`
+  })
 
   $('#review').on('click', function () {
     const result = $('#result').val() === 'true'

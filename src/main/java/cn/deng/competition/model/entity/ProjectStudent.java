@@ -5,6 +5,7 @@ import cn.deng.competition.model.constant.Review;
 import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -40,7 +41,7 @@ public class ProjectStudent extends BaseEntity implements Serializable {
   /**
    * 评委 id
    */
-  private Long judgeId;
+  private Long studentId;
 
   /**
    * 审批
@@ -52,5 +53,10 @@ public class ProjectStudent extends BaseEntity implements Serializable {
    */
   private String file;
 
+  /**
+   * 学生
+   */
+  @Transient
+  private SysUser student;
 
 }
