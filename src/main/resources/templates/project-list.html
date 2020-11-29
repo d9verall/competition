@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="common/common::_header(~{::title},~{::link})">
+  <title>项目列表</title>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+        crossorigin="anonymous">
+  <link href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css"
+        rel="stylesheet">
+</head>
+<body id="page-top">
+<div id="wrapper">
+  <!-- Sidebar -->
+  <ul th:replace="common/sidebar::_sidebar"></ul>
+  <!-- Sidebar -->
+  <main th:replace="common/container::_main(~{::.main})">
+    <div class="main">
+      <div id="toolbar">
+        <button class="btn btn-danger" sec:authorize="hasAnyRole('ROLE_ADMIN')">删除所选</button>
+      </div>
+      <table id="table"
+             data-toggle="table"
+             data-show-columns="true"
+             data-show-refresh="true"
+             data-toolbar="#toolbar"
+             data-show-columns-toggle-all="true"
+             data-show-pagination-switch="true"
+             data-show-toggle="true"
+             data-url="/project/data"
+             data-search="true"
+             data-detail-view="true"
+             data-detail-formatter="detailFormatter"
+             data-buttons="actions"
+             data-click-to-select="true"
+             data-pagination="true">
+        <thead>
+        <tr>
+          <th data-field="state" data-checkbox="true"></th>
+          <th data-field="name" data-sortable="true">项目名称</th>
+          <th data-field="description" data-visible="false">项目描述</th>
+          <th data-field="gradeRule" data-visible="false">评分规则</th>
+          <th data-field="createTime" data-sortable="true">创建时间</th>
+          <th data-field="review" data-formatter="reviewFormatter" data-sortable="true">是否审阅</th>
+          <th data-field="apply" data-formatter="applyFormatter" data-sortable="true">是否开启报名</th>
+        </tr>
+        </thead>
+      </table>
+    </div>
+  </main>
+
+</div>
+<div th:include="common/util::_toTop"></div>
+<div th:include="common/common::_footer"></div>
+<script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script>
+<script
+    src="https://unpkg.com/bootstrap-table@1.18.0/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+<script>
+  const $table = $('#table');
+
+  function reviewFormatter(value) {
+    return value === 'WAIT' ? '<span class="text-warning">等待审阅</span>'
+        : value === 'SUCCESS' ? '<span class="text-success">审阅通过</span>'
+            : '<span class="text-danger">审阅拒绝</span>'
+  }
+
+  function applyFormatter(value) {
+    return value.apply ?
+        '<span class="text-primary">已经开启报名</span>'
+        : '<span class="text-muted">尚未开启报名</span>'
+  }
+
+  function getSelectRowIds() {
+    return $table.bootstrapTable('getSelections').map(row => row.id)
+  }
+
+  /**
+   * 详细信息格式化
+   * @param index
+   * @param {{review, name, description, apply, createTime, updateTime, remark, gradeRule}} row
+   * @returns {string}
+   */
+  function detailFormatter(index, row) {
+    const html = []
+    html.push(`<p>项目名称：${row.name}</p>`)
+    html.push(`<p>项目描述：<pre>${row.description}</pre></p>`)
+    html.push(`<p>评分规则：<pre>${row.gradeRule}</pre></p>`)
+    html.push(`<p>是否审阅：${reviewFormatter(row.review)}</p>`)
+    html.push(`<p>是否开启报名：${applyFormatter(row.apply)}</p>`)
+    html.push(`<p>创建时间：${row.createTime}</p>`)
+    html.push(`<p>修改时间：${row.updateTime}</p>`)
+    html.push(`<p>备注信息：${row.remark}</p>`)
+    return html.join('')
+  }
+
+  function actions() {
+    return []
+  }
+
+  $(function () {
+    $table.bootstrapTable('refreshOptions', {
+      classes: ['table', 'table-hover'].join(' ')
+    })
+  })
+</script>
+<script sec:authorize="hasAnyRole('ROLE_ADMIN')">
+  /**
+   * 操作按钮
+   */
+  function actions() {
+    return {
+      reviewSuccess: {
+        text: '审批通过',
+        icon: 'fa-check',
+        event: function () {
+          const ids = getSelectRowIds();
+          console.log(ids)
+        },
+        attributes: {
+          title: '将所选的标记为审核已通过'
+        }
+      },
+      reviewFail: {
+        text: '审批拒绝',
+        icon: 'fa-times',
+        event: function () {
+          const ids = getSelectRowIds();
+          console.log(ids)
+        },
+        attributes: {
+          title: '将所选的标记为审核未通过'
+        }
+      },
+      applySuccess: {
+        text: '开启报名',
+        icon: 'fa-play-circle',
+        event: function () {
+          const ids = getSelectRowIds();
+          console.log(ids)
+        },
+        attributes: {
+          title: '将所选的开启报名'
+        }
+      },
+      applyFail: {
+        text: '关闭报名',
+        icon: 'fa-stop-circle',
+        event: function () {
+          const ids = getSelectRowIds();
+          console.log(ids)
+        },
+        attributes: {
+          title: '将所选的关闭报名'
+        }
+      }
+    }
+  }
+</script>
+</body>
+
+</html>

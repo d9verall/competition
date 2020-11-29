@@ -1,5 +1,6 @@
 package cn.deng.competition.base;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.EntityListeners;
@@ -43,12 +44,14 @@ public class BaseEntity implements Serializable {
    * 创建时间
    */
   @CreatedDate
+  @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
   private LocalDateTime createTime;
 
   /**
    * 更新时间
    */
   @LastModifiedDate
+  @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
   private LocalDateTime updateTime;
 
   /**

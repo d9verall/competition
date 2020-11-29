@@ -21,9 +21,18 @@ public enum Review {
 
   @Override
   public String toString() {
-    return this.name().toUpperCase();
+    return name().toUpperCase();
   }
 
+  public Boolean isSuccess() {
+    return "SUCCESS".equalsIgnoreCase(name());
+  }
 
+  public Boolean isFail() {
+    return "FAIL".equalsIgnoreCase(name());
+  }
 
+  public Boolean isWait() {
+    return "WAIT".equalsIgnoreCase(name());
+  }
 }
