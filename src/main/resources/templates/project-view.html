@@ -15,7 +15,7 @@
       </div>
 
       <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-6">
           <!-- 基本信息 -->
           <div class="card mb-4">
             <div
@@ -27,6 +27,13 @@
               <pre th:text="${detail.project.description}"></pre>
               <p>积分规则</p>
               <pre th:text="${detail.project.gradeRule}"></pre>
+              <div>审批状态：
+                <div th:switch="${detail.project.review}">
+                  <span class="badge badge-pill badge-success" th:case="'SUCCESS'">审批通过</span>
+                  <span class="badge badge-pill badge-danger" th:case="'FAIL'">审批失败</span>
+                  <span class="badge badge-pill badge-secondary" th:case="'WAIT'">等待审批</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
