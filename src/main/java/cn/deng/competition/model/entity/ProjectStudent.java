@@ -39,6 +39,16 @@ public class ProjectStudent extends BaseEntity implements Serializable {
   private String description;
 
   /**
+   * 报名状态
+   */
+  private String status;
+
+  /**
+   * 分数
+   */
+  private String score;
+
+  /**
    * 评委 id
    */
   private Long studentId;

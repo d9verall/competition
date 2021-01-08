@@ -2,268 +2,566 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:insert="common/common::_header(~{::title},~{::link})">
-  <title>项目列表</title>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-        crossorigin="anonymous">
-  <link href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css"
-        rel="stylesheet">
+    <title>项目列表</title>
+<!--    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"-->
+<!--          integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"-->
+<!--          crossorigin="anonymous">-->
+    <link href="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.css"
+          rel="stylesheet">
+
 </head>
 <body id="page-top">
 <div id="wrapper">
-  <!-- Sidebar -->
-  <ul th:replace="common/sidebar::_sidebar"></ul>
-  <!-- Sidebar -->
-  <main th:replace="common/container::_main(~{::.main})">
-    <div class="main">
-      <div id="toolbar">
-        <button class="btn btn-danger" id="delete" sec:authorize="hasAnyRole('ROLE_ADMIN')">删除所选</button>
-      </div>
-      <table id="table"
-             data-toggle="table"
-             data-show-columns="true"
-             data-show-refresh="true"
-             data-toolbar="#toolbar"
-             data-show-columns-toggle-all="true"
-             data-show-pagination-switch="true"
-             data-show-toggle="true"
-             data-url="/project/data"
-             data-search="true"
-             data-detail-view="true"
-             data-detail-formatter="detailFormatter"
-             th:data-buttons="${#authentication.getAuthorities().contains('ROLE_STUDENT')?'empty':'actions'}"
-             data-click-to-select="true"
-             data-pagination="true">
-        <thead>
-        <tr>
-          <th data-field="state" data-checkbox="true"></th>
-          <th data-field="name" data-sortable="true" data-formatter="nameFormatter">项目名称</th>
-          <th data-field="description" data-visible="false">项目描述</th>
-          <th data-field="gradeRule" data-visible="false">评分规则</th>
-          <th data-field="createTime" data-sortable="true">创建时间</th>
-          <th data-field="review" data-formatter="reviewFormatter" data-sortable="true">是否审阅</th>
-          <th data-field="apply" data-formatter="applyFormatter" data-sortable="true">是否开启报名</th>
-        </tr>
-        </thead>
-      </table>
-    </div>
-  </main>
-  <div class="modal fade" id="review-project" tabindex="-1" aria-labelledby="reviewProject"
-       aria-hidden="true" sec:authorize="hasAnyRole('ROLE_ADMIN')">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="review-project-label">项目审批</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <form>
-            <div class="form-group" id="judge-check">
-              <label>选择评委</label>
-              <div id="judge"></div>
+    <!-- Sidebar -->
+    <ul th:replace="common/sidebar::_sidebar"></ul>
+    <!-- Sidebar -->
+    <main th:replace="common/container::_main(~{::.main})">
+        <div class="main">
+            <div id="toolbar">
+                <button class="btn btn-danger" id="delete" sec:authorize="hasAnyRole('ROLE_ADMIN')">删除所选</button>
             </div>
-            <label for="result" class="hide"></label>
-            <input type="text" class="form-control hide" id="result">
-            <label for="project" class="hide"></label>
-            <input type="text" class="form-control hide" id="project">
-            <div class="form-group" id="reason">
-              <label for="reason-text" class="col-form-label">失败结果</label>
-              <textarea class="form-control" name="reason" id="reason-text"></textarea>
+            <input type="hidden" name="_csrf" id="csrf" th:value="${_csrf.token}"/>
+            <table id="table"
+                   data-toggle="table"
+                   data-show-columns="true"
+                   data-show-refresh="true"
+                   data-toolbar="#toolbar"
+                   data-show-columns-toggle-all="true"
+                   data-show-pagination-switch="true"
+                   data-show-toggle="true"
+                   data-url="/project/data"
+                   data-search="true"
+                   data-detail-view="true"
+                   data-detail-formatter="detailFormatter"
+                   th:data-buttons="${#authentication.getAuthorities().contains('ROLE_STUDENT')?'empty':'actions'}"
+                   data-click-to-select="true"
+                   data-pagination="true">
+                <thead>
+                <tr>
+                    <th data-field="state" data-checkbox="true"></th>
+                    <th data-field="name" data-sortable="true" data-formatter="nameFormatter">项目名称</th>
+                    <th data-field="description" data-visible="false">项目描述</th>
+                    <th data-field="gradeRule" data-visible="false">评分规则</th>
+                    <th data-field="createTime" data-sortable="true">创建时间</th>
+                    <th data-field="review" data-formatter="reviewFormatter" data-sortable="true">是否审阅</th>
+                    <th data-field="apply" data-formatter="applyFormatter" data-sortable="true">是否开启报名</th>
+                    <th sec:authorize="hasRole('ROLE_STUDENT')" data-formatter="signUpFormatter" data-sortable="true">
+                        操作
+                    </th>
+                    <th sec:authorize="hasRole('ROLE_JUDGE')" data-formatter="reviewProjectFormatter"
+                        data-sortable="true">
+                        操作
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </main>
+    <div class="modal fade" id="review-project" tabindex="-1" aria-labelledby="reviewProject"
+         aria-hidden="true" sec:authorize="hasAnyRole('ROLE_ADMIN')">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="review-project-label">项目审批</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group" id="judge-check">
+                            <label>选择评委</label>
+                            <div id="judge"></div>
+                        </div>
+                        <label for="result" class="hide"></label>
+                        <input type="text" class="form-control hide" id="result">
+                        <label for="project" class="hide"></label>
+                        <input type="text" class="form-control hide" id="project">
+                        <div class="form-group" id="reason">
+                            <label for="reason-text" class="col-form-label">失败结果</label>
+                            <textarea class="form-control" name="reason" id="reason-text"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="review">确认</button>
+                </div>
             </div>
-          </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-          <button type="button" class="btn btn-primary" id="review">确认</button>
-        </div>
-      </div>
     </div>
-  </div>
+    <div class="modal fade" id="review-judge-project" tabindex="-1"
+         aria-hidden="true" sec:authorize="hasAnyRole('ROLE_JUDGE')">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="review-judge-project-label">审批报名情况</h5>
+                </div>
+                <div class="modal-body">
+                    <h5 id="projectName"></h5>
+                    <table id="studentTable"
+                           data-show-columns="true"
+                           data-show-refresh="true"
+                           data-show-columns-toggle-all="true"
+                           data-show-pagination-switch="true"
+                           data-show-toggle="true"
+                           data-search="true"
+                           data-detail-view="true"
+                           data-detail-formatter="detailFormatter"
+                           data-click-to-select="true"
+                           data-pagination="true">
+                        <thead>
+                        <tr>
+                            <th data-field="studentId" data-sortable="true">学生编号</th>
+                            <th data-field="status" data-sortable="true" data-formatter="reviewProjectFormatter_1">
+                                报名状态
+                            </th>
+                            <th data-field="review" data-sortable="true" data-formatter="reviewProjectFormatter_2">
+                                审核状态
+                            </th>
+                            <th data-field="file" data-sortable="true">
+                                作品存放位置
+                            </th>
+                            <th data-sortable="true" data-formatter="reviewProjectFormatter_3">
+                                打分
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div th:include="common/util::_toTop"></div>
 <div th:include="common/common::_footer"></div>
 <script src="https://unpkg.com/bootstrap-table@1.18.0/dist/bootstrap-table.min.js"></script>
-<script
-    src="https://unpkg.com/bootstrap-table@1.18.0/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.0/dist/locale/bootstrap-table-zh-CN.min.js"></script>
+
 <script>
-  const $table = $('#table');
-
-  function reviewFormatter(value) {
-    return value === 'WAIT' ? '<span class="text-warning">等待审阅</span>'
-        : value === 'SUCCESS' ? '<span class="text-success">审阅通过</span>'
-            : '<span class="text-danger">审阅拒绝</span>'
-  }
-
-  function applyFormatter(value) {
-    return value ?
-        '<span class="text-primary">已经开启报名</span>'
-        : '<span class="text-muted">尚未开启报名</span>'
-  }
-
-  /**
-   * @return {Array}
-   **/
-  function getSelectRowIds() {
-    return $table.bootstrapTable('getSelections').map(row => row.id)
-  }
-
-  /**
-   * 详细信息格式化
-   * @param index
-   * @param {{id, review, name, description, apply, createTime, updateTime, remark, gradeRule}} row
-   * @returns {string}
-   */
-  function detailFormatter(index, row) {
-    const html = []
-    html.push(`<p>项目名称：<a href="/project/view/${row.id}">${row.name}</a></p>`)
-    html.push(`<p>项目描述：<pre>${row.description}</pre></p>`)
-    html.push(`<p>评分规则：<pre>${row.gradeRule}</pre></p>`)
-    html.push(`<p>是否审阅：${reviewFormatter(row.review)}</p>`)
-    html.push(`<p>是否开启报名：${applyFormatter(row.apply)}</p>`)
-    html.push(`<p>创建时间：${row.createTime}</p>`)
-    html.push(`<p>修改时间：${row.updateTime}</p>`)
-    html.push(`<p>备注信息：${row.remark}</p>`)
-    return html.join('')
-  }
-
-  function nameFormatter(value, row) {
-    return `<a href="/project/view/${row.id}">${row.name}</a>`
-  }
-
-  function actions() {
-    return []
-  }
-
-  $(function () {
-    $table.bootstrapTable('refreshOptions', {
-      classes: ['table', 'table-hover'].join(' ')
+    const $table = $('#table');
+    let user;
+    /**
+     * 获取当前用户
+     */
+    $.ajax({
+        url: `/user/currentUser`,
+        method: 'GET',
+        contentType: 'application/json',
+        success: function (data) {
+            user = data;
+        },
+        error: function (error) {
+            alert(`获取当前用户失败:${error}`)
+        }
     })
-  })
+
+    /**
+     * 审阅栏
+     */
+    function reviewFormatter(value) {
+        return value === 'WAIT' ? '<span class="text-warning">等待审阅</span>'
+            : value === 'SUCCESS' ? '<span class="text-success">审阅通过</span>'
+                : '<span class="text-danger">审阅拒绝</span>'
+    }
+
+    /**
+     * 开启报名栏
+     */
+    function applyFormatter(value) {
+        return value ?
+            '<span class="text-primary">已经开启报名</span>'
+            : '<span class="text-muted">尚未开启报名</span>'
+    }
+
+    /**
+     * 获取行的id
+     * @return {Array}
+     **/
+    function getSelectRowIds() {
+        return $table.bootstrapTable('getSelections').map(row => row.id)
+    }
+
+    /**
+     * 详细信息格式化
+     * @param index
+     * @param {{id, review, name, description, apply, createTime, updateTime, remark, gradeRule}} row
+     * @returns {string}
+     */
+    function detailFormatter(index, row) {
+        const html = []
+        html.push(`<p>项目名称：<a href="/project/view/${row.id}">${row.name}</a></p>`)
+        html.push(`<p>项目描述：<pre>${row.description}</pre></p>`)
+        html.push(`<p>评分规则：<pre>${row.gradeRule}</pre></p>`)
+        html.push(`<p>是否审阅：${reviewFormatter(row.review)}</p>`)
+        html.push(`<p>是否开启报名：${applyFormatter(row.apply)}</p>`)
+        html.push(`<p>创建时间：${row.createTime}</p>`)
+        html.push(`<p>修改时间：${row.updateTime}</p>`)
+        html.push(`<p>备注信息：${row.remark}</p>`)
+        return html.join('')
+    }
+
+    function nameFormatter(value, row) {
+        return `<a href="/project/view/${row.id}">${row.name}</a>`
+    }
+
+    function actions() {
+        return []
+    }
+
+    $(function () {
+        $table.bootstrapTable('refreshOptions', {
+            classes: ['table', 'table-hover'].join(' ')
+        })
+    })
 </script>
 <script sec:authorize="hasAnyRole('ROLE_ADMIN')">
-  function getJudge() {
-    $.ajax({
-      url: `/user/judge`,
-      method: 'GET',
-      contentType: 'application/json',
-      success: function (data) {
-        const $judge = $('#judge');
-        $judge.html("")
-        data.map(d => $judge.append(
-            `<div class="custom-control custom-checkbox">
+    function getJudge() {
+        $.ajax({
+            url: `/user/judge`,
+            method: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+                const $judge = $('#judge');
+                $judge.html("")
+                data.map(d => $judge.append(
+                    `<div class="custom-control custom-checkbox">
               <input type="checkbox" class="custom-control-input judge" data-value="${d.id}" id="judge-${d.id}">
               <label class="custom-control-label" for="judge-${d.id}">${d.name}</label>
             </div>`
-        ))
-        $('#review-project').modal('toggle')
-      },
-      error: function (error) {
-        alert(`获取评委信息失败:${error}`)
-      }
+                ))
+                $('#review-project').modal('toggle')
+            },
+            error: function (error) {
+                alert(`获取评委信息失败:${error}`)
+            }
+        })
+    }
+
+    function empty() {
+        return {}
+    }
+
+    /**
+     * 操作按钮
+     */
+    function actions() {
+        return {
+            reviewSuccess: {
+                text: '审批通过',
+                icon: 'fa-check',
+                event: function () {
+                    const ids = getSelectRowIds();
+                    if (ids.length < 1) {
+                        return
+                    }
+                    getJudge()
+                    $('#judge-check').removeClass('hide')
+                    $('#project').val(ids.join())
+                    $('#result').val(true)
+                    $('#reason').addClass('hide')
+                    $('#review-project').modal('toggle')
+                },
+                attributes: {
+                    title: '将所选的标记为审核已通过'
+                }
+            },
+            reviewFail: {
+                text: '审批拒绝',
+                icon: 'fa-times',
+                event: function () {
+                    const ids = getSelectRowIds();
+                    if (ids.length < 1) {
+                        return
+                    }
+                    $('#judge-check').addClass('hide')
+                    $('#project').val(ids.join())
+                    $('#result').val(false)
+                    $('#reason').removeClass('hide')
+                    $('#review-project').modal('toggle')
+                },
+                attributes: {
+                    title: '将所选的标记为审核未通过'
+                }
+            },
+            applySuccess: {
+                text: '开启报名',
+                icon: 'fa-play-circle',
+                event: function () {
+                    const ids = getSelectRowIds();
+                    if (ids.length < 1) {
+                        return
+                    }
+                    if (confirm(`你确定将${ids.join()}个项目开启报名吗？`)) {
+                        window.location.href = `/project/apply?ids=${ids}&result=true`
+                    }
+                },
+                attributes: {
+                    title: '将所选的开启报名'
+                }
+            },
+            applyFail: {
+                text: '关闭报名',
+                icon: 'fa-stop-circle',
+                event: function () {
+                    const ids = getSelectRowIds();
+                    if (ids.length < 1) {
+                        return
+                    }
+                    if (confirm(`你确定将${ids.join()}个项目关闭报名吗？`)) {
+                        window.location.href = `/project/apply?ids=${ids}&result=false`
+                    }
+                },
+                attributes: {
+                    title: '将所选的关闭报名'
+                }
+            }
+        }
+    }
+
+    $('#delete').on('click', function () {
+        window.location.href = `/project/delete?ids=${getSelectRowIds().join()}`
     })
-  }
 
-  function empty() {
-    return {}
-  }
+    $('#review').on('click', function () {
+        const result = $('#result').val() === 'true'
+        const judgeIds = result
+            ? $('.judge:checkbox:checked').map((_, value) => $(value).attr('data-value')).toArray()
+            : []
+        if (judgeIds.length === 0 && result) {
+            alert("至少选择一个评委")
+            return
+        }
+        window.location.href = `/project/review?ids=${$('#project').val()}&` +
+            `judgeIds=${judgeIds.join()}&result=${result ? 'SUCCESS' : 'FAIL'}` +
+            `&reason=${$('#reason-text').val()}`
+    })
+</script>
+<script sec:authorize="hasAnyRole('ROLE_JUDGE')">
+    let projectStudentAndJudge
+    /**
+     * 评委获取自己可评的已报名的项目
+     */
+    $.ajax({
+        url: `/project/getProjectStudentAndJudge`,
+        method: 'GET',
+        contentType: 'application/json',
+        async: false,
+        success: function (data) {
+            projectStudentAndJudge = data;
+        }, error: function (error) {
+            alert(`获取可评且已报名的项目失败`)
+        }
+    })
 
-  /**
-   * 操作按钮
-   */
-  function actions() {
-    return {
-      reviewSuccess: {
-        text: '审批通过',
-        icon: 'fa-check',
-        event: function () {
-          const ids = getSelectRowIds();
-          if (ids.length < 1) {
-            return
-          }
-          getJudge()
-          $('#judge-check').removeClass('hide')
-          $('#project').val(ids.join())
-          $('#result').val(true)
-          $('#reason').addClass('hide')
-          $('#review-project').modal('toggle')
-        },
-        attributes: {
-          title: '将所选的标记为审核已通过'
+    function reviewProjectFormatter(value, row) {
+        let str;
+        if (row.apply === false || row.review === false) {
+            str = '<button class="btn btn-sm btn-outline-dark disabled">暂无报名</button>'
+        } else {
+            for (i in projectStudentAndJudge) {
+                if (projectStudentAndJudge[i].projectId === row.id && projectStudentAndJudge[i].status === "confirm") {
+                    str = "<button class='btn btn-sm btn-warning' onclick='saveProjectStudentJudge(\"" + row.id + "\",\"" + row.name + "\",user.id)'>审批报名情况</button>"
+                    break;
+                } else {
+                    str = '<button class="btn btn-sm btn-outline-dark disabled">暂无报名</button>'
+                }
+            }
         }
-      },
-      reviewFail: {
-        text: '审批拒绝',
-        icon: 'fa-times',
-        event: function () {
-          const ids = getSelectRowIds();
-          if (ids.length < 1) {
-            return
-          }
-          $('#judge-check').addClass('hide')
-          $('#project').val(ids.join())
-          $('#result').val(false)
-          $('#reason').removeClass('hide')
-          $('#review-project').modal('toggle')
-        },
-        attributes: {
-          title: '将所选的标记为审核未通过'
-        }
-      },
-      applySuccess: {
-        text: '开启报名',
-        icon: 'fa-play-circle',
-        event: function () {
-          const ids = getSelectRowIds();
-          if (ids.length < 1) {
-            return
-          }
-          if (confirm(`你确定将${ids.join()}个项目开启报名吗？`)) {
-            window.location.href = `/project/apply?ids=${ids}&result=true`
-          }
-        },
-        attributes: {
-          title: '将所选的开启报名'
-        }
-      },
-      applyFail: {
-        text: '关闭报名',
-        icon: 'fa-stop-circle',
-        event: function () {
-          const ids = getSelectRowIds();
-          if (ids.length < 1) {
-            return
-          }
-          if (confirm(`你确定将${ids.join()}个项目关闭报名吗？`)) {
-            window.location.href = `/project/apply?ids=${ids}&result=false`
-          }
-        },
-        attributes: {
-          title: '将所选的关闭报名'
-        }
-      }
+        return str;
     }
-  }
 
-  $('#delete').on('click', function () {
-    window.location.href = `/project/delete?ids=${getSelectRowIds().join()}`
-  })
-
-  $('#review').on('click', function () {
-    const result = $('#result').val() === 'true'
-    const judgeIds = result
-        ? $('.judge:checkbox:checked').map((_, value) => $(value).attr('data-value')).toArray()
-        : []
-    if (judgeIds.length === 0 && result) {
-      alert("至少选择一个评委")
-      return
+    function saveProjectStudentJudge(projectId, projectName, userId,) {
+        let studentTable = $('#studentTable')
+        let newProjectStudentAndJudge = [];
+        for (i in projectStudentAndJudge) {
+            if (projectStudentAndJudge[i].projectId === parseInt(projectId)) {
+                newProjectStudentAndJudge.push(projectStudentAndJudge[i]);
+            }
+        }
+        $('#projectName').text("项目名：" + projectName)
+        studentTable.bootstrapTable('destroy');
+        studentTable.bootstrapTable({
+            data: newProjectStudentAndJudge
+        });
+        $('#review-judge-project').modal('toggle')
     }
-    window.location.href = `/project/review?ids=${$('#project').val()}&` +
-        `judgeIds=${judgeIds.join()}&result=${result ? 'SUCCESS' : 'FAIL'}` +
-        `&reason=${$('#reason-text').val()}`
-  })
+
+    function reviewProjectFormatter_1(value) {
+        return value === 'confirm' ? '<span class="text-success">已报名</span>'
+            : '<span class="text-danger">取消报名</span>'
+    }
+
+    function reviewProjectFormatter_2(value, row) {
+        return value === 'WAIT' ? "<button class='btn btn-sm btn-success' onclick='submit(\"" + row.id + "\",\"" + "SUCCESS" + "\")'>通过</button>" +
+            "<button class='btn btn-sm btn-danger' onclick='submit(\"" + row.id + "\",\"" + "FAIL" + "\")'>拒绝</button>"
+            : value === 'SUCCESS' ? "<span class='text-success'>审核已通过</span>"
+                : "<span class='text-danger'>审核已拒绝</span>"
+    }
+
+    function reviewProjectFormatter_3(value, row) {
+        return "<div class='input-group mb-3'>" +
+            "  <input type='text' id='score"+row.id+"' class='form-control' aria-describedby='button-addon2'>" +
+            "  <div class='input-group-append'>" +
+            "    <button class='btn btn-sm btn-outline-primary' type='button' id='button-addon2' onclick='score(\"" + row.id + "\")'>提交</button>" +
+            "  </div>" +
+            "</div>"
+    }
+
+    function submit(rowId, review) {
+        $.ajax({
+            url: `/project/updateProjectStudent`,
+            headers: {"X-CSRF-TOKEN": $('#csrf').val()},
+            method: 'post',
+            dataType: 'json',
+            data: {
+                "id": rowId,
+                "review": review,
+            },
+            success: function (data) {
+                alert(`操作成功`)
+                window.location.reload()
+            }, error: function (error) {
+                alert(`操作失败，请稍后重试`)
+            }
+        })
+    }
+
+    function score(rowId) {
+        let score = $("#score"+rowId).val();
+        $.ajax({
+            url: `/project/updateScore`,
+            headers: {"X-CSRF-TOKEN": $('#csrf').val()},
+            method: 'post',
+            dataType: 'json',
+            data: {
+                "id": rowId,
+                "score":score
+            },
+            success: function (data) {
+                alert(`操作成功`)
+            }, error: function (error) {
+                alert(`操作失败，请稍后重试`)
+            }
+        })
+    }
+</script>
+<script sec:authorize="hasAnyRole('ROLE_STUDENT')">
+    let projectStudentData;
+    /**
+     * 获取学生报名列表
+     */
+    $.ajax({
+        url: `/project/getProjectStudent`,
+        method: 'GET',
+        async: false,
+        contentType: 'application/json',
+        success: function (data) {
+            projectStudentData = data;
+        },
+        error: function (error) {
+            alert(`获取学生报名列表失败`)
+        }
+    })
+
+    /**
+     * 表格报名按钮
+     */
+    function signUpFormatter(value, row) {
+        console.log(projectStudentData)
+        let str;
+        if (row.apply === false || row.review === false) {
+            str = '<button class="btn btn-sm btn-outline-dark disabled">不可报名</button>'
+        } else {
+            for (i in projectStudentData) {
+                if (projectStudentData[i].projectId === row.id && projectStudentData[i].studentId === user.id && projectStudentData[i].status === "confirm") {
+                    str = "<button class='btn btn-sm btn-warning' onclick='saveProjectStudent(\"" + row.id + "\",\"" + "cancel" + "\",user.id)'>取消报名</button>"
+                    if ( projectStudentData[i].review === "FAIL"){
+                        str+="<span style='margin-left: 1vw' class='text-danger'>已被拒绝</span>"
+                    }else if (projectStudentData[i].review === "WAIT"){
+                        str+="<span style='margin-left: 1vw' class='text-warning'>等待审批</span>"
+                    }else if (projectStudentData[i].review === "SUCCESS"){
+                        str+="<span class='file-button btn btn-sm btn-success'>选择作品<input type='file' id='file"+ row.id +"'></span>" +
+                            "<button style='margin-left: 1vw' class='btn btn-sm btn-primary' onclick='submitFile(\"" + row.id + "\",user.id)'>提交作品</button>"
+                        if (projectStudentData[i].file!=null){
+                            str+="<span style='margin-left: 1vw' class='text-success'>√</span>"
+                        }
+                    }
+                    break;
+                } else {
+                    str = "<button class='btn btn-sm btn-primary' onclick='saveProjectStudent(\"" + row.id + "\",\"" + "confirm" + "\",user.id)'>我要报名</button>"
+                }
+            }
+        }
+        return str;
+    }
+
+    /**
+     * 保存报名信息
+     */
+    function saveProjectStudent(id, status, userId) {
+        $.ajax({
+            url: `/project/createProjectStudent`,
+            headers: {"X-CSRF-TOKEN": $('#csrf').val()},
+            method: 'post',
+            dataType: 'json',
+            data: {
+                "projectId": id,
+                "status": status,
+                "userId": userId
+            },
+            success: function (data) {
+                alert(`操作成功`)
+                window.location.reload()
+            }, error: function (error) {
+                alert(`操作失败，请稍后重试`)
+            }
+        })
+    }
+
+    /**
+     * 提交作品
+     */
+    function submitFile(projectId,userId) {
+        let formData = new FormData();
+        let file = $("#file"+projectId);
+        formData.append("file",file[0].files[0]);
+        formData.append("projectId",projectId);
+        formData.append("userId",userId);
+        $.ajax({
+            url: `/project/upload`,
+            headers: {"X-CSRF-TOKEN": $('#csrf').val()},
+            method: 'post',
+            contentType:false,
+            processData:false,
+            data: formData,
+            success: function (data) {
+                alert(`操作成功`)
+            }, error: function (error) {
+                alert(`操作失败，请稍后重试`)
+            }
+        })
+    }
 </script>
 </body>
 
+<style>
+    .file-button {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+        margin-left: 1vw;
+    }
+
+    .file-button input{
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        opacity: 0;
+        -ms-filter: 'alpha(opacity=0)';
+    }
+</style>
 </html>

@@ -102,4 +102,8 @@ public class SysUserServiceImpl implements SysUserService {
     return sysUserRepository.findAllByRole(SysRole.ROLE_JUDGE);
   }
 
+  @Override
+  public SysUser findById(Long id) {
+    return sysUserRepository.findById(id).get();
+  }
 }

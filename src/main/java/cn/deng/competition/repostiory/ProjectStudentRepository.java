@@ -21,4 +21,13 @@ public interface ProjectStudentRepository extends BaseRepository<ProjectStudent>
    * @return 结果
    */
   List<ProjectStudent> findAllByProjectId(Long id);
+
+  /**
+   * 根据项目 id 和学生 id 获取
+   *
+   * @param projectId 项目 id
+   * @param studentId 学生 id
+   * @return 结果
+   */
+  ProjectStudent findByProjectIdAndStudentId(Long projectId,Long studentId);
 }

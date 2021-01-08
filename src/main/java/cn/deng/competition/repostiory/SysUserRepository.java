@@ -57,5 +57,4 @@ public interface SysUserRepository extends BaseRepository<SysUser> {
    * @return 结果
    */
   List<SysUser> findAllByRole(SysRole role);
-
 }

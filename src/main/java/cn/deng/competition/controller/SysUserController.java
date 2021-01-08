@@ -10,6 +10,8 @@ import cn.deng.competition.model.entity.SysUser;
 import cn.deng.competition.service.SysUserService;
 import java.util.List;
 import java.util.Objects;
+
+import cn.deng.competition.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -48,6 +50,16 @@ public class SysUserController {
                 .email(email)
                 .phone(phone)
                 .build());
+  }
+
+  /**
+   * 获取当前用户
+   * @return SysUser
+   */
+  @ResponseBody
+  @GetMapping("/currentUser")
+  public SysUser currentUser() {
+    return SecurityUtil.currentUser();
   }
 
   /**

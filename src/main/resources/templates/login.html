@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Welcome</title>
+  <title>欢迎</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Raleway:300,600"
         rel="stylesheet">
@@ -21,7 +21,7 @@
         <a href="#" class="logo">TF <span>.</span></a>
 
         <div class="heading">
-          <h2>Welcome</h2>
+          <h2>欢迎</h2>
           <p>天府学院——竞赛平台</p>
         </div>
 
@@ -42,7 +42,7 @@
             <div class="form-group">
               <label for="login-email">邮箱/手机号</label>
               <input type="text" name="username" id="login-email"
-                     th:value="${param.username == null? '1': param.username[0]}" required/>
+                     th:value="${param.username == null? '': param.username[0]}" required/>
               <span class="error"></span>
             </div>
             <div class="form-group">

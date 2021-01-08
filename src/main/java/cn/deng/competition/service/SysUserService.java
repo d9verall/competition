@@ -61,4 +61,11 @@ public interface SysUserService {
    * @return 结果
    */
   List<SysUser> getJudge();
+
+  /**
+   * 根据 id 查询
+   * @param id 编号
+   * @return 结果
+   */
+  SysUser findById(Long id);
 }

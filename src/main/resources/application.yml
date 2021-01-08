@@ -11,3 +11,14 @@ spring:
       ddl-auto: update
   mvc:
     static-path-pattern: /static/**
+
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.file-upload-path}
+
+  servlet:
+    multipart:
+      max-file-size: 1GB
+      max-request-size: 3GB
+
+web:
+  file-upload-path: C:/competitionFile/

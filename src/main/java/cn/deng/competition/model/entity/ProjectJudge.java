@@ -38,11 +38,6 @@ public class ProjectJudge extends BaseEntity implements Serializable {
   private Long judgeId;
 
   /**
-   * 分数
-   */
-  private Integer score;
-
-  /**
    * 评分信息
    */
   private String info;
