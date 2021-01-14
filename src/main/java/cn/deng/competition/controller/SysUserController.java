@@ -1,6 +1,5 @@
 package cn.deng.competition.controller;
 
-import static cn.deng.competition.util.SecurityUtil.currentUser;
 import static cn.deng.competition.util.SecurityUtil.logout;
 import static cn.deng.competition.util.SecurityUtil.reloadCurrentUser;
 import static org.springframework.http.ResponseEntity.ok;

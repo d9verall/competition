@@ -39,7 +39,7 @@
                 <thead>
                 <tr>
                     <th data-field="state" data-checkbox="true"></th>
-                    <th data-field="name" data-sortable="true" data-formatter="nameFormatter">项目名称</th>
+                    <th data-field="name" data-sortable="true">项目名称</th>
                     <th data-field="description" data-visible="false">项目描述</th>
                     <th data-field="gradeRule" data-visible="false">评分规则</th>
                     <th data-field="createTime" data-sortable="true">创建时间</th>
@@ -193,7 +193,7 @@
      */
     function detailFormatter(index, row) {
         const html = []
-        html.push(`<p>项目名称：<a href="/project/view/${row.id}">${row.name}</a></p>`)
+        html.push(`<p>项目名称：${row.name}`)
         html.push(`<p>项目描述：<pre>${row.description}</pre></p>`)
         html.push(`<p>评分规则：<pre>${row.gradeRule}</pre></p>`)
         html.push(`<p>是否审阅：${reviewFormatter(row.review)}</p>`)

@@ -7,7 +7,6 @@ import cn.deng.competition.repostiory.SysUserRepository;
 import cn.deng.competition.service.SysUserService;
 import cn.deng.competition.util.AvatarUtil;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
