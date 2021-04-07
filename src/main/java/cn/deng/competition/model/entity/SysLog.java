@@ -13,42 +13,38 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Where;
 
 /**
- * @author verall
+ * @author echo
+ * @date 2021/1/19 15:52:50
  */
 @Data
 @SuperBuilder
 @NoArgsConstructor
 @Accessors(chain = true)
 @ToString(callSuper = true)
-@Entity(name = "notice")
-@Table(name = "notice")
+@Entity(name = "sys_log")
+@Table(name = "sys_log")
 @Where(clause = "enable = true")
 @EqualsAndHashCode(callSuper = true)
-public class Notice extends BaseEntity implements Serializable {
+public class SysLog extends BaseEntity implements Serializable {
 
   /**
-   * 发送者
+   * 浏览器
    */
-  private Long sendId;
+  private String browser;
 
   /**
-   * 接受者
+   * 状态码
    */
-  private Long receiveId;
+  private String status;
 
   /**
-   * 主题
+   * url
    */
-  private String subject;
+  private String url;
 
   /**
-   * 内容
+   * 请求方法
    */
-  private String content;
-
-  /**
-   * 是否已读
-   */
-  private Boolean read = false;
+  private String method;
 
 }

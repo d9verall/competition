@@ -17,12 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(rollbackOn = Exception.class)
 public class ProjectStudentImpl implements ProjectStudentService {
-    ProjectStudentRepository projectStudentRepository;
-
-    @Autowired
-    public ProjectStudentImpl(ProjectStudentRepository projectStudentRepository) {
-        this.projectStudentRepository = projectStudentRepository;
-    }
+    private final ProjectStudentRepository projectStudentRepository;
 
     @Override
     public List<ProjectStudent> findAll() {

@@ -2,7 +2,9 @@ package cn.deng.competition.controller;
 
 import cn.deng.competition.model.annotation.HasAdmin;
 import cn.deng.competition.model.constant.SysRole;
+import cn.deng.competition.model.entity.SysLog;
 import cn.deng.competition.model.entity.SysUser;
+import cn.deng.competition.service.SysLogService;
 import cn.deng.competition.service.SysUserService;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SystemController {
 
   private final SysUserService sysUserService;
+  private final SysLogService sysLogService;
 
   @GetMapping("/user")
   public String user(Model model) {
@@ -49,5 +52,12 @@ public class SystemController {
     return Optional.ofNullable(users)
         .orElseGet(Collections::emptyList)
         .stream().filter(user -> user.getRole().equals(role)).count();
+  }
+
+  @GetMapping("/log")
+  public String allLog(Model model) {
+    List<SysLog> logs = sysLogService.findAll();
+    model.addAttribute("logs", logs);
+    return "";
   }
 }
